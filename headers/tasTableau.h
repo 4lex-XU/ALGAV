@@ -11,6 +11,7 @@ struct tasTableau {
 
 TasTableau * initTas(int capacite);
 void echanger (Clef128 * a, Clef128 * b);
+void tasMin (TasTableau * tas, int i);
 Clef128 supprMin (TasTableau * tas);
 void ajout (TasTableau * tas, Clef128 clef);
 TasTableau * ajoutIteratifs (Clef128 clefs[], int taille);
