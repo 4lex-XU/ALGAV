@@ -26,28 +26,45 @@ int eg(Clef128* clef1, Clef128* clef2)
 
 Clef128* hexaToUnsigned(char* clef)
 {
-    char* octet4;
-    char* clef_rev = strrev(clef+2);
-    printf("reverse = %s \n", clef_rev);
+    char* ma_clef = (char*)malloc(sizeof(char)*(strlen(clef)-4));
+    strncpy(ma_clef, clef+2, (strlen(clef)-4));
     Clef128* res = (Clef128*)malloc(sizeof(Clef128));
-    for(int i = 0; i<strlen(clef_rev); i++)
-    {
-        octet4 = strcat(octet4, clef_rev[i]);
-        switch(i){
-            case 8:
-                res->b32_1 = strtoul(octet4, NULL, 16);
-                octet4 = "";
+    char* octet4 = (char*)malloc(sizeof(char)*8);
+loop:   
+    if(strlen(ma_clef) == 32)
+    {  
+        int j = 0;
+        for(int i = 0; i<strlen(ma_clef); i++)
+        {
+            octet4[j] = ma_clef[i];
+            j++;
+            switch(i){
+            case 7:
+                res->b32_4 = strtoul(octet4, NULL, 16);
+                j = 0;
                 break;
-            case 16:
-                res->b32_2 = strtoul(octet4, NULL, 16);
-                octet4 = "";
-                break;
-            case 24:
+            case 15:
                 res->b32_3 = strtoul(octet4, NULL, 16);
-                octet4 = "";
+                j = 0;
+                break;
+            case 23:
+                res->b32_2 = strtoul(octet4, NULL, 16);
+                j = 0;
                 break;   
-        }   
+            }
+        }
+        res->b32_1 = strtoul(octet4, NULL, 16);
     }
-    res->b32_4 = strtoul(octet4, NULL, 16);
+    else{
+        char* newclef;
+        memset(newclef, '0', (32-strlen(ma_clef))*sizeof(char));
+        strcat(newclef, ma_clef);
+        strncpy(ma_clef, newclef, 32);
+        goto loop;
+
+    }
+
+    free(ma_clef);
+    free(octet4);
     return res;
 }
