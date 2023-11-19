@@ -26,44 +26,45 @@ int eg(Clef128* clef1, Clef128* clef2)
 
 Clef128* hexaToUnsigned(char* clef)
 {
-    char* ma_clef = (char*)malloc(sizeof(char)*(strlen(clef)-4));
-    strncpy(ma_clef, clef+2, (strlen(clef)-4));
+    int len = strlen(clef)-4;
+    
+    // RECOPIE CLE SANS 0x
+    char* ma_clef = (char*)malloc(sizeof(char)*32);
+    strncpy(ma_clef, clef+2, 32);
+
+    // ALLOCATION CLEF
     Clef128* res = (Clef128*)malloc(sizeof(Clef128));
     res->clef_hexa = (char*)malloc(sizeof(char)*33);
-    strncpy(res->clef_hexa, clef, 33);
-    char* octet4 = (char*)malloc(sizeof(char)*8);
-loop:   
-    if(strlen(ma_clef) == 32)
+    res->clef_hexa[32] = '\0';
+
+    // TAMPON POUR LE STOCKAGE DES UNSIGNED INT
+    char* octet4 = (char*)malloc(sizeof(char)*9);
+    octet4[8] = '\0';
+
+    // SI CLE 16 OCTETS
+    if(len == 32)
     {  
-        int j = 0;
-        for(int i = 0; i<strlen(ma_clef); i++)
-        {
-            octet4[j] = ma_clef[i];
-            j++;
-            switch(i){
-            case 7:
-                res->b32_4 = strtoul(octet4, NULL, 16);
-                j = 0;
-                break;
-            case 15:
-                res->b32_3 = strtoul(octet4, NULL, 16);
-                j = 0;
-                break;
-            case 23:
-                res->b32_2 = strtoul(octet4, NULL, 16);
-                j = 0;
-                break;   
-            }
-        }
-        res->b32_1 = strtoul(octet4, NULL, 16);
+        strncpy(res->clef_hexa, ma_clef, 32);
+        res->b32_4 = strtoul(strncpy(octet4, ma_clef, 8), NULL, 16);
+        res->b32_3 = strtoul(strncpy(octet4, ma_clef+8, 8), NULL, 16);
+        res->b32_2 = strtoul(strncpy(octet4, ma_clef+16, 8), NULL, 16);
+        res->b32_1 = strtoul(strncpy(octet4, ma_clef+24, 8), NULL, 16);
     }
     else{
-        char* newclef;
-        memset(newclef, '0', (32-strlen(ma_clef))*sizeof(char));
-        strcat(newclef, ma_clef);
-        strncpy(ma_clef, newclef, 32);
-        goto loop;
+        // AJOUT ZERO DEBUT DE CHAINE
+        int nbZero = (32-len);
+        char *newclef = (char*)malloc(sizeof(char)*32);
+        memset(newclef, '0', (32-len)*sizeof(char));
+        strncpy(newclef+nbZero, ma_clef,32-nbZero);
 
+        strncpy(res->clef_hexa, newclef, 32);
+        // TRAITEMENT AVEC LA NOUVELLE CHAINE CREE
+        res->b32_4 = strtoul(strncpy(octet4, newclef, 8), NULL, 16);
+        res->b32_3 = strtoul(strncpy(octet4, newclef+8, 8), NULL, 16);
+        res->b32_2 = strtoul(strncpy(octet4, newclef+16, 8), NULL, 16);
+        res->b32_1 = strtoul(strncpy(octet4, newclef+24, 8), NULL, 16);
+
+        free(newclef);
     }
 
     free(ma_clef);

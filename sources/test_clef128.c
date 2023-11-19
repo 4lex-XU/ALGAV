@@ -15,6 +15,8 @@ int main(int argc, char** argv)
     }
 
     FILE* file = NULL;
+    
+    // OUVERTURE
     if((file = fopen(argv[1], "r")) == NULL)
     {
         printf("Error: not open\n");
@@ -23,6 +25,8 @@ int main(int argc, char** argv)
     Clef128* clefs[NB_CLEF];
     char buffer[MAX];
     int i = 0;
+
+    // LECTURE DES CLES DANS LE FICHIER
     while(fgets(buffer, MAX, file) != NULL)
     {
         Clef128* clef = hexaToUnsigned(buffer);
@@ -30,6 +34,7 @@ int main(int argc, char** argv)
         i++;
     }
 
+    // CLEFS ALEATOIRE
     srand(time(NULL));
     int k1, k2;
     do{
@@ -40,6 +45,7 @@ int main(int argc, char** argv)
     printf("Clef 1 = %s -> %u %u %u %u\n", clefs[k1]->clef_hexa, clefs[k1]->b32_4, clefs[k1]->b32_3, clefs[k1]->b32_2, clefs[k1]->b32_1);
     printf("Clef 2 = %s -> %u %u %u %u\n", clefs[k2]->clef_hexa, clefs[k2]->b32_4, clefs[k2]->b32_3, clefs[k2]->b32_2, clefs[k2]->b32_1);
 
+    // TEST FONCTIONS
     if(inf(clefs[k1], clefs[k2]) == 1)
     {
         printf("La clé : %s est strictement superieur à la clé : %s\n",
@@ -58,7 +64,15 @@ int main(int argc, char** argv)
         printf("Les 2 clefs ne sont pas égaux\n");
     }
 
+    // FERMETURE
     fclose(file);
+
+    // LIBERATION
+    for(int i = 0; i<NB_CLEF; i++)
+    {
+        free(clefs[i]->clef_hexa);
+        free(clefs[i]);
+    }
 
     return 0;
 }
