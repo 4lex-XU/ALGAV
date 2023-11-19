@@ -7,6 +7,7 @@ struct clef128{
     unsigned int b32_2;
     unsigned int b32_3;
     unsigned int b32_4; //poids forts
+    char* clef_hexa; // cles en hexa
 };
 
 int inf(Clef128* clef1, Clef128* clef2);

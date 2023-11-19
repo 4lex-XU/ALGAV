@@ -29,6 +29,8 @@ Clef128* hexaToUnsigned(char* clef)
     char* ma_clef = (char*)malloc(sizeof(char)*(strlen(clef)-4));
     strncpy(ma_clef, clef+2, (strlen(clef)-4));
     Clef128* res = (Clef128*)malloc(sizeof(Clef128));
+    res->clef_hexa = (char*)malloc(sizeof(char)*33);
+    strncpy(res->clef_hexa, clef, 33);
     char* octet4 = (char*)malloc(sizeof(char)*8);
 loop:   
     if(strlen(ma_clef) == 32)

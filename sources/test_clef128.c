@@ -37,16 +37,17 @@ int main(int argc, char** argv)
         k2 = rand()%NB_CLEF+1;
     }while(k1 == k2);
 
+    printf("Clef 1 = %s -> %u %u %u %u\n", clefs[k1]->clef_hexa, clefs[k1]->b32_4, clefs[k1]->b32_3, clefs[k1]->b32_2, clefs[k1]->b32_1);
+    printf("Clef 2 = %s -> %u %u %u %u\n", clefs[k2]->clef_hexa, clefs[k2]->b32_4, clefs[k2]->b32_3, clefs[k2]->b32_2, clefs[k2]->b32_1);
+
     if(inf(clefs[k1], clefs[k2]) == 1)
     {
-        printf("La clé2 : %u %u %u %u est strictement superieur à la clé1 : %u %u %u %u \n",
-        clefs[k2]->b32_4, clefs[k2]->b32_3, clefs[k2]->b32_2, clefs[k2]->b32_1,
-        clefs[k1]->b32_4, clefs[k1]->b32_3, clefs[k1]->b32_2, clefs[k1]->b32_1);
+        printf("La clé : %s est strictement superieur à la clé : %s\n",
+        clefs[k2]->clef_hexa, clefs[k1]->clef_hexa);
     }
     else{
-        printf("La clé1 : %u %u %u %u est superieur ou egal à la clé2 : %u %u %u %u \n",
-        clefs[k1]->b32_4, clefs[k1]->b32_3, clefs[k1]->b32_2, clefs[k1]->b32_1,
-        clefs[k2]->b32_4, clefs[k2]->b32_3, clefs[k2]->b32_2, clefs[k2]->b32_1);
+        printf("La clé : %s\n est superieur ou egal à la clé : %s\n",
+        clefs[k1]->clef_hexa, clefs[k2]->clef_hexa);
     }
 
     if(eg(clefs[k1], clefs[k2]) == 1)
