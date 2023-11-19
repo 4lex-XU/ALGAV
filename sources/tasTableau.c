@@ -2,51 +2,87 @@
 #include <stdlib.h>
 #include "../headers/tasTableau.h"
 
-void initTas(TasTableau* tas, int taille) 
+TasTableau * initTas(int capacite) 
 {
+    TasTableau * tas = (TasTableau*)malloc(sizeof(TasTableau));
     tas->taille = 0;
-    tas->tab = (Clef128*)malloc(sizeof(Clef128)*taille);
+    tas->capacite = capacite;
+    tas->tab = (Clef128*)malloc(sizeof(Clef128)*capacite);
+    return tas;
 }
 
-void SupprMin (TasTableau * tas) 
+void echanger (Clef128 * a, Clef128 * b) 
 {
-    if (tas->taille == 0) {
+    Clef128 tmp = *a;
+    *a = *b;
+    *b = tmp;
+}
+
+// fonction récursive qui fait descendre le père à la bonne place
+void tasMin (TasTableau * tas, int i) 
+{
+    int min = i;
+    int gauche = 2*i+1;
+    int droite = 2*i+2;
+    if (gauche < tas->taille && inf(&tas->tab[gauche], &tas->tab[min])) {
+        min = gauche;
+    }
+    if (droite < tas->taille && inf(&tas->tab[droite], &tas->tab[min])) {
+        min = droite;
+    }
+    if (min != i) {
+        echanger(&tas->tab[i], &tas->tab[min]);
+        tasMin(tas, min);
+    }
+}
+
+Clef128 supprMin (TasTableau * tas) 
+{
+    if (tas->taille == 0) { // Si le tas est vide on retourne clef vide
         printf("Tas vide\n");
-        return;
+        return (Clef128){0, 0, 0, 0};
     }
-    tas->tab[0] = tas->tab[tas->taille-1]; // On remplace le min par le dernier élément
-    tas->taille--;  
-    int i = 0; // Pere
-    // On fait descendre le min à sa place
-    while (2*i+1 < tas->taille) { // Tant qu'il a un fils
-        int j = 2*i+1; // Fils gauche
-        if (j+1 < tas->taille && !(inf(&tas->tab[j], &tas->tab[j+1]))) {  // On prend le plus petit des deux fils
-            j++;
-        }
-        if (inf(&tas->tab[i], &tas->tab[j])) { // Si le fils est plus grand que le père on échange
-            Clef128 tmp = tas->tab[i];
-            tas->tab[i] = tas->tab[j];
-            tas->tab[j] = tmp;
-            i = j;
-        } else { // Sinon on a fini
-            break;
-        }
-    }
+    Clef128 min = tas->tab[0];
+    tas->tab[0] = tas->tab[tas->taille-1];
+    tas->taille--;
+    tasMin(tas, 0);
+    return min;
 }
 
-void Ajout (TasTableau * tas, Clef128 clef) {
-    tas->tab[tas->taille++] = clef;
+void ajout (TasTableau * tas, Clef128 clef) 
+{
+    if (tas->taille == tas->capacite) { // Si le tas est plein on double sa capacité
+        tas->capacite *= 2;
+        tas->tab = (Clef128*)realloc(tas->tab, sizeof(Clef128)*tas->capacite);
+    }
+    tas->taille++;
     int i = tas->taille;
-    while (i > 0 && inf(&tas->tab[i/2-1], &tas->tab[i])) { // Tant que le père est plus petit que le fils
-        Clef128 tmp = tas->tab[i];
-        tas->tab[i] = tas->tab[i/2-1];
-        tas->tab[i/2-1] = tmp;
-        i = i/2-1;
+    tas->tab[i] = clef;
+    while (i > 0 && inf(&clef, &tas->tab[(i-1)/2])) { // Tant que la clef est plus petite que son père
+        echanger(&tas->tab[i], &tas->tab[(i-1)/2]); // On remonte la clef
+        i = (i-1)/2;
     }
 }
 
-void AjoutIteratifs (TasTableau * tas, Clef128 clefs[], int taille) {
+// Ajoute les clefs dans le tas une par une, méthode naïve
+TasTableau * ajoutIteratifs (Clef128 clefs[], int taille) 
+{
+    TasTableau * tas = initTas(taille);
     for (int i = 0; i < taille; i++) {
         Ajout(tas, clefs[i]);
     }
+    return tas;
+}
+
+// Construit un tas à partir d'un tableau de clefs, méthode plus efficace
+TasTableau * construction (Clef128 clefs[], int taille)
+{
+    TasTableau * tas = (TasTableau*)malloc(sizeof(TasTableau)*taille);
+    tas->taille = taille;
+    tas->capacite = taille;
+    tas->tab = clefs;
+    for (int i = (taille-1)/2; i >= 0; i--) {
+        tasMin(tas, i);
+    }
+    return tas;
 }
