@@ -35,69 +35,15 @@ int main(int argc, char** argv){
         clefs[i] = clef;
         i++;
     }
-  
-    TasArbre* t1 = (TasArbre*)malloc(sizeof(TasArbre));
-    t1->clef = NULL;
-    t1->fd = NULL;
-    t1->fg = NULL; 
-    t1->hauteur = 0;
-    t1->noeud = 0;
 
-    /*
-    ajout(t1, clefs[0]);
+    TasArbre* t1 = ajoutsIteratifs(clefs, 4);
+    printf("-------TAS ARBRE (AVANT)--------\n");
+    affichageTasArbre(t1);
 
-    affichageClef(t1->clef);
-    printf("hauteur = %d\n", t1->hauteur);
-    printf("noeud = %d\n", t1->noeud);
-
-    ajout(t1, clefs[1]);
-
-    affichageClef(t1->clef);
-    printf("hauteur = %d\n", t1->hauteur);
-    printf("noeud = %d\n", t1->noeud);
-
-    affichageClef(t1->fg->clef);
-    printf("hauteur = %d\n", t1->fg->hauteur);
-    printf("noeud = %d\n", t1->fg->noeud);
-
-    ajout(t1, clefs[2]);
-
-    affichageClef(t1->clef);
-    printf("hauteur = %d\n", t1->hauteur);
-    printf("noeud = %d\n", t1->noeud);
-
-    affichageClef(t1->fg->clef);
-    printf("hauteur = %d\n", t1->fg->hauteur);
-    printf("noeud = %d\n", t1->fg->noeud);
-
-    affichageClef(t1->fd->clef);
-    printf("hauteur = %d\n", t1->fd->hauteur);
-    printf("noeud = %d\n", t1->fd->noeud);
-    
-    ajout(t1, clefs[3]);
-
-    affichageClef(t1->clef);
-    printf("hauteur = %d\n", t1->hauteur);
-    printf("noeud = %d\n", t1->noeud);
-
-    affichageClef(t1->fg->clef);
-    printf("hauteur = %d\n", t1->fg->hauteur);
-    printf("noeud = %d\n", t1->fg->noeud);
-
-    affichageClef(t1->fd->clef);
-    printf("hauteur = %d\n", t1->fd->hauteur);
-    printf("noeud = %d\n", t1->fd->noeud);
-    */
-
-    ajout(t1, clefs[0]);
-    ajout(t1, clefs[1]);
-    ajout(t1, clefs[2]);
-    ajout(t1, clefs[3]);
-    ajout(t1, clefs[4]);
-    ajout(t1, clefs[5]);
-    ajout(t1, clefs[6]);
-    ajout(t1, clefs[7]);
-    ajout(t1, clefs[8]);
+    Clef128 min = supprMin(t1);
+    printf("------CLEF MINIMUM------\n");
+    affichageClef(&min);
+    printf("-------TAS ARBRE (APRES)--------\n");
     affichageTasArbre(t1);
 
     return 0;

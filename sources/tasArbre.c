@@ -108,8 +108,13 @@ void ajout (TasArbre * tas, Clef128* clef)
 
 }
 
-void affichageTasArbre(TasArbre* tas)
+void affichageTasArbre(TasArbre* tas) // Parcours prefixe
 {
+    if(tas->clef == NULL)
+    {
+        printf("AffichageTasArbre : Tas vide\n");
+        return;
+    }
     affichageClef(tas->clef);
     printf("hauteur = %d\n", tas->hauteur);
     printf("noeud = %d\n", tas->noeud);
@@ -125,12 +130,121 @@ void affichageTasArbre(TasArbre* tas)
     }
 }
 
-void supprMin (TasArbre * tas) 
+TasArbre* ajoutsIteratifs(Clef128* clefs[], int len)
 {
-
+    TasArbre* t = (TasArbre*)malloc(sizeof(TasArbre));
+    t->clef = NULL;
+    t->fd = NULL;
+    t->fg = NULL; 
+    t->hauteur = 0;
+    t->noeud = 0;
+    for(int i = 0; i<len; i++)
+    {
+        ajout(t,clefs[i]);
+    }
+    return t;
 }
 
-void ajoutsIteratifs(Clef128 clefs[])
+void comparaison(TasArbre* t)
 {
+    if(t->fg == NULL)
+    {
+        printf("Comparaison : Fin du tas\n");
+        return;
+    }
+    if(inf(t->fg->clef,t->clef))
+    {
+        echange(t->fg->clef,t->clef);
+        comparaison(t->fg);
+    }
+    else{
+        if(t->fd == NULL)
+        {
+            printf("Comparaison : Fin du tas\n");
+            return;
+        }
+        if(inf(t->fd->clef,t->clef))
+        {
+            echange(t->fd->clef,t->clef);
+            comparaison(t->fd);
+        }
+    }
+}
 
+Clef128 supprMin (TasArbre * tas) 
+{
+    Clef128 tmp;
+    TasArbre* dernier = NULL;
+
+    // TAS VIDE
+    if(tas->clef == NULL && dernier == NULL)
+    {
+        printf("SuppMin : Tas vide\n");
+        return (Clef128){0, 0, 0, 0};
+    }
+
+    if(tas->fg == NULL && dernier == NULL) // 1 noeud 
+    {
+        tmp = *tas->clef;
+        tas->clef = NULL;
+        tas->hauteur = 0;
+        tas->noeud = 0;
+        return tmp;
+    }
+    else{
+        if(tas->fd == NULL) // 2 noeuds
+        {
+            printf("aaaaaaaaaaaa\n");
+            dernier = tas->fg;
+            tas->fg = NULL;
+            tas->hauteur --;
+            tas->noeud --;
+        }
+        else{
+            if(tas->fd->fg == NULL && tas->fd->fd == NULL && tas->fg->hauteur == tas->fd->hauteur) // 3 noeuds
+            {
+                printf("bbbbbbb\n");
+                dernier = tas->fd;
+                tas->fd = NULL;
+                tas->noeud --;
+            }
+            else{
+                if(tas->fg->noeud == pow(2,(tas->fg->hauteur))-1) // si le sous arbre gauche est rempli
+                {
+                    if(tas->fd->noeud == pow(2,(tas->fd->hauteur))-1) // si le sous arbre droit est rempli
+                    {
+                        if(tas->fg->hauteur == tas->fd->hauteur) // si les feuilles sont au meme niveau
+                        {
+                            printf("eeeeeeeeee\n");
+                            supprMin(tas->fd);
+                        }
+                        else{
+                            printf("ffffffffffff\n");
+                            supprMin(tas->fg);
+                        }
+                    }
+                    else{
+                        printf("gggggggggggg\n");
+                        supprMin(tas->fd);
+                    }
+                }
+                else{
+                    printf("hhhhhhhhhhhhh\n");
+                    supprMin(tas->fg);
+                }
+            }
+        }
+    }
+    
+    if(dernier)
+    {
+        printf("iiiiiiiiiiiii\n");
+        tmp = *tas->clef;
+        echange(tas->clef,dernier->clef);
+        printf("jjjjjjjjjjj\n");
+        comparaison(tas);
+        printf("kkkkkkkkkk\n");
+    }
+
+    return tmp;
 }
