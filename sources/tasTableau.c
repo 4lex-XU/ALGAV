@@ -19,7 +19,7 @@ void echanger (Clef128 * a, Clef128 * b)
 }
 
 // fonction récursive qui fait descendre le père à la bonne place
-void tasMin (TasTableau * tas, int i) 
+void reequilibrerTas (TasTableau * tas, int i) 
 {
     int min = i;
     int gauche = 2*i+1;
@@ -32,7 +32,7 @@ void tasMin (TasTableau * tas, int i)
     }
     if (min != i) {
         echanger(&tas->tab[i], &tas->tab[min]);
-        tasMin(tas, min);
+        reequilibrerTas(tas, min);
     }
 }
 

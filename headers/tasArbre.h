@@ -9,8 +9,11 @@ struct tasArbre {
     struct tasArbre * fd;
 };
 
-void SupprMin (TasArbre * tas);
-void Ajout (TasArbre * tas, Clef128 clef);
-void AjoutsIteratifs (TasArbre * tas, Clef128 clefs[]);
+TasArbre * creerNoeud (Clef128 clef);;
+void echanger (Clef128 * a, Clef128 * b);
+void reequilibrerTas (TasArbre * tas);
+void supprMin (TasArbre * tas);
+void ajout (TasArbre ** tas, Clef128 clef);
+void ajoutsIteratifs (TasArbre * tas, Clef128 clefs[]);
 
 #endif
