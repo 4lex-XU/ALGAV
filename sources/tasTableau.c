@@ -101,3 +101,26 @@ void affichageTasTableau(TasTableau* tas)
         affichageClef(&tas->tab[i]);
     }
 }
+
+TasTableau * Union(TasTableau *tas1, TasTableau *tas2) {
+    if(tas1->taille == 0) return tas2;
+    if(tas2->taille == 0) return tas1;
+
+    int tailleTotale = tas1->taille + tas2->taille;
+    TasTableau *tasUnion = initTas(tailleTotale);
+
+    // Copie des éléments du tas 1 et 2 dans le nouveau tas
+    for (int i = 0; i < tas1->taille; i++) {
+        tasUnion->tab[i] = tas1->tab[i];
+    }
+    for (int i = 0; i < tas2->taille; i++) {
+        tasUnion->tab[tas1->taille + i] = tas2->tab[i];
+    }
+    tasUnion->taille = tailleTotale;
+
+    // rééquilibrage du nouveau tas
+    for (int i = (tasUnion->taille / 2) - 1; i >= 0; i--) {
+        reequilibrerTas(tasUnion, i);
+    }
+    return tasUnion;
+}

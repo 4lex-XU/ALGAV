@@ -17,5 +17,6 @@ void ajout (TasTableau * tas, Clef128 clef);
 TasTableau * ajoutsIteratifs (Clef128* clefs[], int taille);
 TasTableau * construction (Clef128* clefs[], int taille);
 void affichageTasTableau(TasTableau* tas);
+TasTableau * Union(TasTableau * tas1, TasTableau * tas2);
 
 #endif
