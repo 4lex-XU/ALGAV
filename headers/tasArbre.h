@@ -4,16 +4,20 @@
 
 typedef struct tasArbre TasArbre;
 struct tasArbre {
-    Clef128 clef;
+    Clef128* clef;
     struct tasArbre * fg;
     struct tasArbre * fd;
+    int hauteur; // hauteur de l'arbre
+    int noeud; // nombre de noeud present dans l'arbre
 };
 
-TasArbre * creerNoeud (Clef128 clef);;
-void echanger (Clef128 * a, Clef128 * b);
-void reequilibrerTas (TasArbre * tas);
-void supprMin (TasArbre * tas);
-void ajout (TasArbre ** tas, Clef128 clef);
-void ajoutsIteratifs (TasArbre * tas, Clef128 clefs[]);
+Clef128 supprMin (TasArbre* tas);
+void ajout (TasArbre * tas, Clef128* clef);
+TasArbre* ajoutsIteratifs (Clef128* clefs[], int len);
+TasArbre* creerNoeud(Clef128* clef);
+void initialisation(TasArbre* t);
+void echange(Clef128* a, Clef128* b);
+void affichageTasArbre(TasArbre* tas);
+void comparaison(TasArbre* t);
 
 #endif
