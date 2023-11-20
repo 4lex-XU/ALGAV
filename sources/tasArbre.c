@@ -171,8 +171,9 @@ void comparaison(TasArbre* t)
     }
 }
 
-Clef128 supprMin (TasArbre * tas) 
+Clef128 supprMin (TasArbre* tas) 
 {
+    printf("ICI\n");
     Clef128 tmp;
     TasArbre* dernier = NULL;
 
@@ -196,6 +197,9 @@ Clef128 supprMin (TasArbre * tas)
         {
             printf("aaaaaaaaaaaa\n");
             dernier = tas->fg;
+            printf("---------------------\n");
+            affichageClef(dernier->clef);
+            printf("---------------------\n");
             tas->fg = NULL;
             tas->hauteur --;
             tas->noeud --;
@@ -239,7 +243,16 @@ Clef128 supprMin (TasArbre * tas)
     if(dernier)
     {
         printf("iiiiiiiiiiiii\n");
+        printf("---------------------\n");
+        affichageClef(dernier->clef);
+        printf("---------------------\n");
+
         tmp = *tas->clef;
+        //pb = ne prends pas la racine du tas initial
+        printf("---------------------\n");
+        affichageClef(&tmp);
+        printf("---------------------\n");
+
         echange(tas->clef,dernier->clef);
         printf("jjjjjjjjjjj\n");
         comparaison(tas);

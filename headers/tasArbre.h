@@ -11,7 +11,7 @@ struct tasArbre {
     int noeud; // nombre de noeud present dans l'arbre
 };
 
-Clef128 supprMin (TasArbre * tas);
+Clef128 supprMin (TasArbre* tas);
 void ajout (TasArbre * tas, Clef128* clef);
 TasArbre* ajoutsIteratifs (Clef128* clefs[], int len);
 TasArbre* creerNoeud(Clef128* clef);
