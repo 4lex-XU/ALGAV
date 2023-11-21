@@ -3,6 +3,18 @@
 #include "../headers/tasArbre.h"
 #include <math.h>
 
+TasArbre* initialisation()
+{
+    TasArbre* newTas = (TasArbre*)malloc(sizeof(TasArbre));
+    newTas->clef = NULL;
+    newTas->fd = NULL;
+    newTas->fg = NULL;
+    newTas->parent = NULL; 
+    newTas->hauteur = 0;
+    newTas->noeud = 0;
+    return newTas;
+}
+
 TasArbre* creerNoeud(Clef128* clef)
 {
     TasArbre* noeud = (TasArbre*)malloc(sizeof(TasArbre));
@@ -15,7 +27,7 @@ TasArbre* creerNoeud(Clef128* clef)
     return noeud;
 }
 
-void echange(Clef128* a, Clef128* b)
+void echangeClef(Clef128* a, Clef128* b)
 {
     Clef128 tmp = *a;
     *a = *b;
@@ -27,7 +39,7 @@ void majHauteurAjout(TasArbre* tas)
     // ARRIVEE A LA RACINE
     if(tas == NULL)
     {
-        //printf("MajHauteur : racine\n");
+        //printf("MajHauteur Ajout : racine\n");
         return;
     }
     int hauteurG = (tas->fg == NULL ? 0 : tas->fg->hauteur);
@@ -43,7 +55,7 @@ void majNoeudAjout(TasArbre* tas)
     // ARRIVEE A LA RACINE
     if(tas == NULL)
     {
-        //printf("MajNoeud : racine\n");
+        //printf("MajNoeud Ajout : racine\n");
         return;
     }
     // MAJ NOEUD
@@ -52,7 +64,7 @@ void majNoeudAjout(TasArbre* tas)
     majNoeudAjout(tas->parent);
 }
 
-void ajout (TasArbre * tas, Clef128* clef)
+void ajout (TasArbre * tas, Clef128* clef, int V)
 {
     // ARBRE VIDE
     if(tas->clef == NULL){
@@ -64,6 +76,7 @@ void ajout (TasArbre * tas, Clef128* clef)
     // CLEF EXISTANT
     if(eg(tas->clef, clef)){
         printf("La clef est déjà dans le tas\n");
+        return;
     }
 
     // INSERTION
@@ -73,9 +86,9 @@ void ajout (TasArbre * tas, Clef128* clef)
         tas->fg->parent = tas;
         majHauteurAjout(tas);
         majNoeudAjout(tas);
-        if(inf(clef, tas->clef))
+        if(inf(clef, tas->clef) && V)
         {
-            echange(tas->clef, clef);
+            echangeClef(tas->clef, clef);
         }
         return;
     }
@@ -85,9 +98,9 @@ void ajout (TasArbre * tas, Clef128* clef)
             tas->fd = creerNoeud(clef);
             tas->fd->parent = tas;
             majNoeudAjout(tas);
-            if(inf(clef, tas->clef))
+            if(inf(clef, tas->clef) && V)
             {
-                echange(tas->clef, clef);
+                echangeClef(tas->clef, clef);
             }
             return;
         }
@@ -99,34 +112,34 @@ void ajout (TasArbre * tas, Clef128* clef)
         {
             if(tas->fg->hauteur == tas->fd->hauteur) // si les feuilles sont au meme niveau
             {
-                if(inf(clef, tas->clef))
+                if(inf(clef, tas->clef) && V)
                 {
-                    echange(tas->clef, clef);
+                    echangeClef(tas->clef, clef);
                 }
-                ajout(tas->fg,clef);
+                ajout(tas->fg,clef,V);
             }
             else{
-                if(inf(clef, tas->clef))
+                if(inf(clef, tas->clef) && V)
                 {
-                    echange(tas->clef, clef);
+                    echangeClef(tas->clef, clef);
                 }
-                ajout(tas->fd,clef);
+                ajout(tas->fd,clef,V);
             }
         }
         else{
-            if(inf(clef, tas->clef))
+            if(inf(clef, tas->clef) && V)
             {
-                echange(tas->clef, clef);
+                echangeClef(tas->clef, clef);
             }
-            ajout(tas->fd,clef);
+            ajout(tas->fd,clef,V);
         }
     }
     else{
-        if(inf(clef, tas->clef))
+        if(inf(clef, tas->clef) && V)
         {
-            echange(tas->clef, clef);
+            echangeClef(tas->clef, clef);
         }
-        ajout(tas->fg,clef);
+        ajout(tas->fg,clef,V);
     }
 
 }
@@ -153,50 +166,44 @@ void affichageTasArbre(TasArbre* tas) // Parcours prefixe
     }
 }
 
-TasArbre* ajoutsIteratifs(Clef128* clefs[], int len)
+TasArbre* ajoutsIteratifs(Clef128* clefs[], int len, int V)
 {
-    TasArbre* t = (TasArbre*)malloc(sizeof(TasArbre));
-    t->clef = NULL;
-    t->fd = NULL;
-    t->fg = NULL;
-    t->parent = NULL; 
-    t->hauteur = 0;
-    t->noeud = 0;
+    TasArbre* tas = initialisation();
     for(int i = 0; i<len; i++)
     {
-        ajout(t,clefs[i]);
+        ajout(tas, clefs[i], V);
     }
-    return t;
+    return tas;
 }
 
-void comparaison(TasArbre* t)
+void echangeRacine(TasArbre* tas)
 {
     // RACINE
-    if(t->fg == NULL && t->fd == NULL)
+    if(tas->fg == NULL && tas->fd == NULL)
     {
-        printf("Comparaison : Fin du tas\n");
+        //printf("Echange Racine : Fin du tas\n");
         return;
     }
     // PAS DE SOUS ARBRE DROIT
-    if(t->fd == NULL)
+    if(tas->fd == NULL)
     {
-        if(inf(t->fg->clef,t->clef))
+        if(inf(tas->fg->clef,tas->clef))
         {
-            echange(t->fg->clef,t->clef);
+            echangeClef(tas->fg->clef,tas->clef);
         }
     }else{ // SI 2 FILS : GAUCHE ET DROIT
-        if(inf(t->fg->clef,t->fd->clef)) // TEST CLEF PLUS PETIT ENTRE LES 2 SOUS ARBRES
+        if(inf(tas->fg->clef,tas->fd->clef)) // TEST CLEF PLUS PETIT ENTRE LES 2 SOUS ARBRES
         {
-           if(inf(t->fg->clef,t->clef)) // SI LE SOUS ARBRE GAUCHE EST PLUS PETIT -> TEST SI PLUS PETIT QUE NOUVEAU RACINE
+           if(inf(tas->fg->clef,tas->clef)) // SI LE SOUS ARBRE GAUCHE EST PLUS PETIT -> TEST SI PLUS PETIT QUE NOUVEAU RACINE
             {
-                echange(t->fg->clef,t->clef);
-                comparaison(t->fg);
+                echangeClef(tas->fg->clef,tas->clef);
+                echangeRacine(tas->fg);
             }
         }else{
-            if(inf(t->fd->clef,t->clef)) // SI LE SOUS ARBRE DROIT EST PLUS PETIT -> TEST SI PLUS PETIT QUE NOUVEAU RACINE
+            if(inf(tas->fd->clef,tas->clef)) // SI LE SOUS ARBRE DROIT EST PLUS PETIT -> TEST SI PLUS PETIT QUE NOUVEAU RACINE
             {
-                echange(t->fd->clef,t->clef);
-                comparaison(t->fd);
+                echangeClef(tas->fd->clef,tas->clef);
+                echangeRacine(tas->fd);
             }
         }
     }
@@ -207,7 +214,7 @@ void majHauteurSuppr(TasArbre* tas)
     // ARRIVEE A LA RACINE
     if(tas == NULL)
     {
-        //printf("MajHauteur : racine\n");
+        //printf("MajHauteur Suppr : racine\n");
         return;
     }
     int hauteurG = (tas->fg == NULL ? 0 : tas->fg->hauteur);
@@ -223,7 +230,7 @@ void majNoeudSuppr(TasArbre* tas)
     // ARRIVEE A LA RACINE
     if(tas == NULL)
     {
-        //printf("MajNoeud : racine\n");
+        //printf("MajNoeud Suppr : racine\n");
         return;
     }
     // MAJ NOEUD
@@ -292,20 +299,51 @@ Clef128 supprMin (TasArbre* tas, TasArbre* racine)
     
     if(dernier)
     {
-        echange(racine->clef,dernier->clef);
-        comparaison(racine);
+        echangeClef(racine->clef,dernier->clef);
+        echangeRacine(racine);
     }
 
     return tmp;
 }
 
-TasArbre* construction(Clef128* clefs[], int len)
+void reequilibrage(TasArbre* tas)
 {
-
+    if(tas == NULL)
+    {
+        //printf("Reequilibrage : Fin du tas\n");
+        return;
+    }
+    echangeRacine(tas);
+    reequilibrage(tas->fg);
+    reequilibrage(tas->fd);
 }
 
-TasArbre* Union(TasArbre* tas1, TasArbre* tas2)
+TasArbre* construction(Clef128* clefs[], int len)
 {
-    // parcourir chaque tas et utiliser la fonction ajout sur chaque noeud -> parcours de taille(tas1) puis taille(tas2) 
-    // => Complexité somme des 2 tas ?  * la complexite de la fonction ajout 
+    TasArbre* tas = initialisation();
+    for(int i = 0; i<len; i++)
+    {
+        ajout(tas, clefs[i], 0);
+    }
+
+    reequilibrage(tas);
+    return tas;
+}
+
+void Union(TasArbre* tasUnion, TasArbre* tas1, TasArbre* tas2)
+{
+    if(tas1 != NULL)
+    {
+        ajout(tasUnion, tas1->clef, 0);
+        Union(tasUnion, tas1->fg, tas2);
+        Union(tasUnion, tas1->fd, tas2);
+    }
+    
+    if(tas2 != NULL)
+    {
+        ajout(tasUnion, tas2->clef, 0);
+        Union(tasUnion, tas1, tas2->fg);
+        Union(tasUnion, tas1, tas2->fd);
+    }
+    reequilibrage(tasUnion);
 }
