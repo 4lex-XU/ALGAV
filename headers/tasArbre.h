@@ -23,5 +23,7 @@ void majHauteurAjout(TasArbre* tas);
 void majNoeudAjout(TasArbre* tas);
 void majHauteurSuppr(TasArbre* tas);
 void majNoeudSuppr(TasArbre* tas);
+TasArbre* construction(Clef128* clefs[], int len);
+TasArbre* Union(TasArbre* tas1, TasArbre* tas2);
 
 #endif

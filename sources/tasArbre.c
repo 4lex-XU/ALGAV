@@ -254,7 +254,6 @@ Clef128 supprMin (TasArbre* tas, TasArbre* racine)
     else{
         if(tas->fd == NULL) // 2 noeuds
         {
-            printf("aaaaaaaaaaaa\n");
             dernier = tas->fg;
             tas->fg = NULL;
             majHauteurSuppr(tas);
@@ -263,7 +262,6 @@ Clef128 supprMin (TasArbre* tas, TasArbre* racine)
         else{
             if(tas->fd->fg == NULL && tas->fd->fd == NULL && tas->fg->hauteur == tas->fd->hauteur) // 3 noeuds
             {
-                printf("bbbbbbb\n");
                 dernier = tas->fd;
                 tas->fd = NULL;
                 majNoeudSuppr(tas);
@@ -275,21 +273,17 @@ Clef128 supprMin (TasArbre* tas, TasArbre* racine)
                     {
                         if(tas->fg->hauteur == tas->fd->hauteur) // si les feuilles sont au meme niveau
                         {
-                            printf("eeeeeeeeee\n");
                             supprMin(tas->fd, racine);
                         }
                         else{
-                            printf("ffffffffffff\n");
                             supprMin(tas->fg, racine);
                         }
                     }
                     else{
-                        printf("gggggggggggg\n");
                         supprMin(tas->fd, racine);
                     }
                 }
                 else{
-                    printf("hhhhhhhhhhhhh\n");
                     supprMin(tas->fg, racine);
                 }
             }
@@ -298,12 +292,20 @@ Clef128 supprMin (TasArbre* tas, TasArbre* racine)
     
     if(dernier)
     {
-        printf("iiiiiiiiiiiii\n");
         echange(racine->clef,dernier->clef);
-        printf("jjjjjjjjjjj\n");
         comparaison(racine);
-        printf("kkkkkkkkkk\n");
     }
 
     return tmp;
+}
+
+TasArbre* construction(Clef128* clefs[], int len)
+{
+
+}
+
+TasArbre* Union(TasArbre* tas1, TasArbre* tas2)
+{
+    // parcourir chaque tas et utiliser la fonction ajout sur chaque noeud -> parcours de taille(tas1) puis taille(tas2) 
+    // => Complexité somme des 2 tas ?  * la complexite de la fonction ajout 
 }
