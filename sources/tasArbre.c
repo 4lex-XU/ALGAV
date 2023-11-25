@@ -325,7 +325,6 @@ TasArbre* construction(Clef128* clefs[], int len)
     {
         ajout(tas, clefs[i], 0);
     }
-
     reequilibrage(tas);
     return tas;
 }
@@ -346,4 +345,11 @@ void Union(TasArbre* tasUnion, TasArbre* tas1, TasArbre* tas2)
         Union(tasUnion, tas1, tas2->fd);
     }
     reequilibrage(tasUnion);
+}
+
+void delete(TasArbre* tas)
+{
+    free(tas->fg);
+    free(tas->fd);
+    free(tas);
 }

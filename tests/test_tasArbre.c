@@ -51,16 +51,19 @@ int main(int argc, char** argv){
         j++;
     }
           
+    /*
     // AJOUTS ITERATIFS
     TasArbre* t1 = ajoutsIteratifs(clefs, 10, 1);
     printf("-------AJOUTS ITERATIFS--------\n");
     affichageTasArbre(t1);
-
+    */
     /*
     // SUPPRESSION
     Clef128 min = supprMin(t1, t1);
+    printf("\n");
     printf("------CLEF MINIMUM------\n");
     affichageClef(&min);
+    printf("\n");
     printf("-------SUPPRESSION--------\n");
     affichageTasArbre(t1);
     */
@@ -71,7 +74,6 @@ int main(int argc, char** argv){
     printf("-------CONSTRUCTION--------\n");
     affichageTasArbre(t2);
     
-
     /*
     // UNION
     TasArbre* tas1 = construction(clefs, 2);
@@ -82,7 +84,11 @@ int main(int argc, char** argv){
     affichageTasArbre(tasUnion);
     */
 
+    fclose(file);
+    fclose(file2);
 
+    deleteClefs(clefs, NB_CLEF);
+    deleteClefs(clefs2, NB_CLEF);
 
     return 0;
 }

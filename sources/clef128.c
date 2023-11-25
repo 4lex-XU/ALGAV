@@ -78,14 +78,24 @@ void affichageClef(Clef128* clef)
     clef->clef_hexa, clef->b32_4, clef->b32_3, clef->b32_2, clef->b32_1);
 }
 
+/*
 void deleteClefs(Clef128 **clefs, int taille) {
     if (clefs != NULL) {
         for (int i = 0; i < taille; i++) {
-            if (clefs[i] != NULL) {
+            if (clefs[i]->clef_hexa != NULL) {
                 // Libérer d'autres ressources allouées dans Clef128 si nécessaire
-                free(clefs[i]);
+                free(clefs[i]->clef_hexa);
             }
         }
         free(clefs);
+    }
+}
+*/
+
+void deleteClefs(Clef128 **clefs, int taille) {
+    for(int i = 0; i<taille; i++)
+    {
+        free(clefs[i]->clef_hexa);
+        free(clefs[i]);
     }
 }
