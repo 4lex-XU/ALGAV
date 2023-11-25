@@ -7,7 +7,7 @@
 #include <math.h>
 
 #define MAX 1000
-#define NB_CLEF 1000
+#define NB_CLEF 200000
 
 int main(int argc, char** argv){
 
@@ -36,7 +36,7 @@ int main(int argc, char** argv){
         i++;
     }
 
-    TasArbre* t1 = ajoutsIteratifs(clefs, 10);
+    TasArbre* t1 = ajoutsIteratifs(clefs, 200000);
     printf("-------TAS ARBRE (AVANT)--------\n");
     affichageTasArbre(t1);
 
