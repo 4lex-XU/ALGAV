@@ -28,5 +28,7 @@ void Union(TasArbre* tasUnion, TasArbre* tas1, TasArbre* tas2);
 void reequilibrage(TasArbre* tas);
 TasArbre* initialisation();
 void delete(TasArbre* tas);
+Clef128* copy(Clef128* clef);
+void ajoutTas(TasArbre* newTas, TasArbre* tas);
 
 #endif

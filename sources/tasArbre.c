@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "../headers/tasArbre.h"
 #include <math.h>
+#include <string.h>
 
 TasArbre* initialisation()
 {
@@ -13,6 +14,18 @@ TasArbre* initialisation()
     newTas->hauteur = 0;
     newTas->noeud = 0;
     return newTas;
+}
+
+Clef128* copy(Clef128* clef)
+{
+    Clef128* res = (Clef128*)malloc(sizeof(Clef128));
+    res->b32_1 = clef->b32_1;
+    res->b32_2 = clef->b32_2;
+    res->b32_3 = clef->b32_3;
+    res->b32_4 = clef->b32_4;
+    res->clef_hexa = (char*)malloc(sizeof(char)*33);
+    strcpy(res->clef_hexa, clef->clef_hexa);
+    return res;
 }
 
 TasArbre* creerNoeud(Clef128* clef)
@@ -68,7 +81,7 @@ void ajout (TasArbre * tas, Clef128* clef, int V)
 {
     // ARBRE VIDE
     if(tas->clef == NULL){
-        tas->clef = clef;
+        tas->clef = copy(clef);
         tas->hauteur += 1;
         tas->noeud += 1;
         return;
@@ -171,7 +184,8 @@ TasArbre* ajoutsIteratifs(Clef128* clefs[], int len, int V)
     TasArbre* tas = initialisation();
     for(int i = 0; i<len; i++)
     {
-        ajout(tas, clefs[i], V);
+        Clef128* newClef = copy(clefs[i]);
+        ajout(tas, newClef, V);
     }
     return tas;
 }
@@ -323,33 +337,45 @@ TasArbre* construction(Clef128* clefs[], int len)
     TasArbre* tas = initialisation();
     for(int i = 0; i<len; i++)
     {
-        ajout(tas, clefs[i], 0);
+        Clef128* newClef = copy(clefs[i]);
+        ajout(tas, newClef, 0);
     }
     reequilibrage(tas);
     return tas;
 }
 
+void ajoutTas(TasArbre* newTas, TasArbre* tas)
+{
+    if(tas == NULL)
+    {
+        return;
+    }
+    Clef128* newClef = copy(tas->clef);
+    ajout(newTas, newClef, 0);
+    ajoutTas(newTas, tas->fg);
+    ajoutTas(newTas, tas->fd);
+}
+
 void Union(TasArbre* tasUnion, TasArbre* tas1, TasArbre* tas2)
 {
-    if(tas1 != NULL)
+    if(tas1 == NULL || tas2 == NULL)
     {
-        ajout(tasUnion, tas1->clef, 0);
-        Union(tasUnion, tas1->fg, tas2);
-        Union(tasUnion, tas1->fd, tas2);
+        return;
     }
-    
-    if(tas2 != NULL)
-    {
-        ajout(tasUnion, tas2->clef, 0);
-        Union(tasUnion, tas1, tas2->fg);
-        Union(tasUnion, tas1, tas2->fd);
-    }
+    ajoutTas(tasUnion,tas1);
+    ajoutTas(tasUnion, tas2);
     reequilibrage(tasUnion);
 }
 
 void delete(TasArbre* tas)
 {
-    free(tas->fg);
-    free(tas->fd);
+    if(tas == NULL)
+    {
+        return;
+    }
+    free(tas->clef->clef_hexa);
+    free(tas->clef);
+    delete(tas->fg);
+    delete(tas->fd);
     free(tas);
 }
