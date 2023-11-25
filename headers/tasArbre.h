@@ -13,17 +13,19 @@ struct tasArbre {
 };
 
 Clef128 supprMin (TasArbre* tas, TasArbre* racine);
-void ajout (TasArbre * tas, Clef128* clef);
-TasArbre* ajoutsIteratifs (Clef128* clefs[], int len);
+void ajout (TasArbre * tas, Clef128* clef, int V); // V = 1 indique si il faut faire la verification des tailles des clés
+TasArbre* ajoutsIteratifs (Clef128* clefs[], int len,int V);
 TasArbre* creerNoeud(Clef128* clef);
-void echange(Clef128* a, Clef128* b);
+void echangeClef(Clef128* a, Clef128* b);
 void affichageTasArbre(TasArbre* tas);
-void comparaison(TasArbre* t);
+void echangeRacine(TasArbre* tas);
 void majHauteurAjout(TasArbre* tas);
 void majNoeudAjout(TasArbre* tas);
 void majHauteurSuppr(TasArbre* tas);
 void majNoeudSuppr(TasArbre* tas);
 TasArbre* construction(Clef128* clefs[], int len);
-TasArbre* Union(TasArbre* tas1, TasArbre* tas2);
+void Union(TasArbre* tasUnion, TasArbre* tas1, TasArbre* tas2);
+void reequilibrage(TasArbre* tas);
+TasArbre* initialisation();
 
 #endif
