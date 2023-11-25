@@ -14,9 +14,9 @@ void echanger (Clef128 * a, Clef128 * b);
 void reequilibrerTas (TasTableau * tas, int i);
 Clef128 supprMin (TasTableau * tas);
 void ajout (TasTableau * tas, Clef128 clef);
-TasTableau * ajoutsIteratifs (Clef128* clefs[], int taille);
-TasTableau * construction (Clef128* clefs[], int taille);
+TasTableau * ajoutsIteratifs (Clef128* clefs[], int deb, int fin);
+TasTableau * construction (Clef128* clefs[], int deb, int fin);
 void affichageTasTableau(TasTableau* tas);
 TasTableau * Union(TasTableau * tas1, TasTableau * tas2);
-
+void delete(TasTableau * tas);
 #endif

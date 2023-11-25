@@ -65,23 +65,23 @@ void ajout (TasTableau * tas, Clef128 clef)
 }
 
 // Ajoute les clefs dans le tas une par une, méthode naïve
-TasTableau * ajoutsIteratifs (Clef128 * clefs[], int taille) 
+TasTableau * ajoutsIteratifs (Clef128 * clefs[], int deb, int fin) 
 {
-    TasTableau * tas = initTas(taille);
-    for (int i = 0; i < taille; i++) {
+    TasTableau * tas = initTas(fin-deb);
+    for (int i = deb; i < fin; i++) {
         ajout(tas, *clefs[i]);
     }
     return tas;
 }
 
 // Construit un tas à partir d'un tableau de clefs, méthode plus efficace
-TasTableau * construction (Clef128 * clefs[], int taille)
+TasTableau * construction (Clef128 * clefs[], int deb, int fin)
 {
-    TasTableau * tas = (TasTableau*)malloc(sizeof(TasTableau)*taille);
-    tas->taille = taille;
-    tas->capacite = taille;
-    for (int i = 0; i < taille; i++) {
-        tas->tab[i] = *clefs[i];
+    int taille = fin-deb;
+    TasTableau * tas = initTas(taille);
+    for (int i = deb, j = 0; i < fin; i++, j++) {
+        tas->tab[j] = *clefs[i];
+        tas->taille++;
     }
     for (int i = (taille-1)/2; i >= 0; i--) {
         reequilibrerTas(tas, i);
@@ -107,7 +107,7 @@ TasTableau * Union(TasTableau *tas1, TasTableau *tas2) {
     if(tas2->taille == 0) return tas1;
 
     int tailleTotale = tas1->taille + tas2->taille;
-    TasTableau *tasUnion = initTas(tailleTotale);
+    TasTableau * tasUnion = initTas(tailleTotale);
 
     // Copie des éléments du tas 1 et 2 dans le nouveau tas
     for (int i = 0; i < tas1->taille; i++) {
@@ -123,4 +123,9 @@ TasTableau * Union(TasTableau *tas1, TasTableau *tas2) {
         reequilibrerTas(tasUnion, i);
     }
     return tasUnion;
+}
+
+void delete(TasTableau *tas) {
+    free(tas->tab);
+    free(tas);
 }

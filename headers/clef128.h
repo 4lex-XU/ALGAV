@@ -14,5 +14,6 @@ int inf(Clef128* clef1, Clef128* clef2);
 int eg(Clef128* clef1, Clef128* clef2);
 Clef128* hexaToUnsigned(char* clef);
 void affichageClef(Clef128* clef);
+void deleteClefs(Clef128** clef, int taille);
 
 #endif

@@ -7,7 +7,7 @@
 #include <math.h>
 
 #define MAX 1000
-#define NB_CLEF 200000
+#define NB_CLEF 1000
 
 int main(int argc, char** argv){
 
@@ -38,7 +38,7 @@ int main(int argc, char** argv){
         i++;
     }
 
-    TasTableau* t1 = ajoutsIteratifs(clefs, 200000);
+    TasTableau* t1 = ajoutsIteratifs(clefs, 0, 6);
     printf("-------AJOUT ITERATIF--------\n");
     printf("-------TAS Tableau (AVANT)--------\n");
     affichageTasTableau(t1);
@@ -51,7 +51,7 @@ int main(int argc, char** argv){
 
     printf("\n");
 
-    /*TasTableau* t2 = construction(clefs, 200000);
+    TasTableau* t2 = construction(clefs, 7, 13);
     printf("-------CONSTRUCTION--------\n");
     printf("-------TAS Tableau (AVANT)--------\n");
     affichageTasTableau(t2);
@@ -60,7 +60,20 @@ int main(int argc, char** argv){
     printf("------CLEF MINIMUM------\n");
     affichageClef(&min);
     printf("-------TAS TABLEAU (APRES)--------\n");
-    affichageTasTableau(t2);*/
+    affichageTasTableau(t2);
+
+    printf("\n");
+    TasTableau* t3 = Union(t1, t2);
+    printf("-------UNION--------\n");
+    printf("-------TAS Tableau (AVANT)--------\n");
+    affichageTasTableau(t3);
+
+    // FERMETURE
+    fclose(file);
+    deleteClef(clefs, NB_CLEF);
+    delete(t1);
+    delete(t2);
+    delete(t3);
 
     return 0;
 }
