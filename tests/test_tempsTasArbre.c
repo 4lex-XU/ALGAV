@@ -41,14 +41,14 @@ int main(int argc, char** argv)
     int tailles[] = {1000, 5000, 10000, 20000, 50000, 80000, 120000, 200000};
     int nbTailles = sizeof(tailles) / sizeof(tailles[0]);
     char * jeux[8] = 
-    {   "./cles_alea/jeu_1_nb_cles_1000.txt",
-        "./cles_alea/jeu_1_nb_cles_5000.txt",
-        "./cles_alea/jeu_1_nb_cles_10000.txt",
-        "./cles_alea/jeu_1_nb_cles_20000.txt",
-        "./cles_alea/jeu_1_nb_cles_50000.txt",
-        "./cles_alea/jeu_1_nb_cles_80000.txt",
-        "./cles_alea/jeu_1_nb_cles_120000.txt",
-        "./cles_alea/jeu_1_nb_cles_200000.txt"
+    {   "./cles_alea/jeu_3_nb_cles_1000.txt",
+        "./cles_alea/jeu_3_nb_cles_5000.txt",
+        "./cles_alea/jeu_3_nb_cles_10000.txt",
+        "./cles_alea/jeu_3_nb_cles_20000.txt",
+        "./cles_alea/jeu_3_nb_cles_50000.txt",
+        "./cles_alea/jeu_3_nb_cles_80000.txt",
+        "./cles_alea/jeu_3_nb_cles_120000.txt",
+        "./cles_alea/jeu_3_nb_cles_200000.txt"
     };
 
     for (int i = 0; i < nbTailles; i++) {

@@ -85,16 +85,15 @@ int main(int argc, char** argv){
     printf("\n");
     printf("-------UNION--------\n");
     affichageTasArbre(tasUnion);
-    
 
     fclose(file);
     fclose(file2);
 
     delete(t1);
-    delete(t2);
-    delete(tas1);
-    delete(tas2);
-    delete(tasUnion);
+    //delete(t2);
+    //delete(tas1);
+    //delete(tas2);
+    //delete(tasUnion);
     deleteClefs(clefs, NB_CLEF);
     deleteClefs(clefs2, NB_CLEF);
 
