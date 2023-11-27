@@ -50,7 +50,7 @@ int main(int argc, char** argv){
         clefs2[j] = clef;
         j++;
     }
-    
+
     // AJOUTS ITERATIFS
     TasArbre* t1 = ajoutsIteratifs(clefs, 10, 1);
     printf("-------AJOUTS ITERATIFS--------\n");

@@ -1,0 +1,8 @@
+Taille: 1000, ajoutsIteratifs: 0.002336, construction: 0.000782
+Taille: 5000, ajoutsIteratifs: 0.004956, construction: 0.004406
+Taille: 10000, ajoutsIteratifs: 0.010640, construction: 0.010262
+Taille: 20000, ajoutsIteratifs: 0.022862, construction: 0.022750
+Taille: 50000, ajoutsIteratifs: 0.114176, construction: 0.099998
+Taille: 80000, ajoutsIteratifs: 0.163066, construction: 0.249783
+Taille: 120000, ajoutsIteratifs: 0.337963, construction: 0.269049
+Taille: 200000, ajoutsIteratifs: 0.434990, construction: 0.407692
