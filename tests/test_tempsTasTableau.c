@@ -8,10 +8,19 @@
 
 #define MAX 1000
 
-double mesurerTemps(TasTableau * (*fonction)(Clef128**, int, int), Clef128 **clefs, int deb, int fi) {
+double mesurerTempsAjoutsIteratifs(Clef128 **clefs, int deb, int fi) {
     clock_t debut, fin;
     debut = clock();
-    TasTableau * t = fonction(clefs, deb, fi);
+    TasTableau * t = ajoutsIteratifs(clefs, deb, fi);
+    fin = clock();
+    delete(t);
+    return (double)(fin - debut) / CLOCKS_PER_SEC;
+}
+
+double mesurerTempsConstruction(Clef128 **clefs, int deb, int fi) {
+    clock_t debut, fin;
+    debut = clock();
+    TasTableau * t = construction(clefs, deb, fi);
     fin = clock();
     delete(t);
     return (double)(fin - debut) / CLOCKS_PER_SEC;
@@ -63,8 +72,8 @@ int main(){
             clefs[i] = clef;
             i++;
         }
-        double tempsAjoutsIteratifs = mesurerTemps(ajoutsIteratifs, clefs, 0, taille);
-        double tempsConstruction = mesurerTemps(construction, clefs, 0, taille);
+        double tempsAjoutsIteratifs = mesurerTempsAjoutsIteratifs(clefs, 0, taille);
+        double tempsConstruction = mesurerTempsConstruction(clefs, 0, taille);
 
         fprintf(fichier, "Taille: %d, ajoutsIteratifs: %f, construction: %f\n", taille, tempsAjoutsIteratifs, tempsConstruction);   
         

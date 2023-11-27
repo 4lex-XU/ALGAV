@@ -28,7 +28,7 @@ double mesurerTempsConstruction(Clef128 **clefs, int len)
     return (double)(fin - debut) / CLOCKS_PER_SEC;
 }
 
-int main(int argc, char** argv)
+int main()
 {
     FILE * file = NULL;
     FILE * fichier = NULL;
