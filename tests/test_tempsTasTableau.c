@@ -21,7 +21,7 @@ int main(int argc, char** argv){
 
     FILE * file = NULL;
     FILE * fichier = NULL;
-    if ((fichier = fopen("./resultats/resultats_temps.txt", "w")) == NULL) {
+    if ((fichier = fopen("./resultats/resultats_temps_TasTableau.txt", "w")) == NULL) {
         printf("Error: not open\n");
         return 0;
     }
