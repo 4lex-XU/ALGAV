@@ -402,7 +402,7 @@ TasArbre* construction(Clef128* clefs[], int len)
     return tas;
 }
 
-void ajoutTas(TasArbre* newTas, TasArbre* tas)
+void ajoutTasUnion(TasArbre* newTas, TasArbre* tas)
 {
     if(tas == NULL)
     {
@@ -410,8 +410,8 @@ void ajoutTas(TasArbre* newTas, TasArbre* tas)
     }
     Clef128* newClef = copy(tas->clef);
     ajout(newTas, newClef, 0);
-    ajoutTas(newTas, tas->fg);
-    ajoutTas(newTas, tas->fd);
+    ajoutTasUnion(newTas, tas->fg);
+    ajoutTasUnion(newTas, tas->fd);
 }
 
 void Union(TasArbre* tasUnion, TasArbre* tas1, TasArbre* tas2)
@@ -420,8 +420,8 @@ void Union(TasArbre* tasUnion, TasArbre* tas1, TasArbre* tas2)
     {
         return;
     }
-    ajoutTas(tasUnion,tas1);
-    ajoutTas(tasUnion, tas2);
+    ajoutTasUnion(tasUnion,tas1);
+    ajoutTasUnion(tasUnion, tas2);
     reequilibrage(tasUnion);
 }
 
