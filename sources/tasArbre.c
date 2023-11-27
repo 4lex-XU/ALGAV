@@ -47,6 +47,65 @@ void echangeClef(Clef128* a, Clef128* b)
     *b = tmp;
 }
 
+void echangeRacine(TasArbre* tas)
+{
+    // RACINE
+    if(tas->fg == NULL && tas->fd == NULL)
+    {
+        //printf("Echange Racine : Fin du tas\n");
+        return;
+    }
+    // PAS DE SOUS ARBRE DROIT
+    if(tas->fd == NULL)
+    {
+        if(inf(tas->fg->clef,tas->clef))
+        {
+            echangeClef(tas->fg->clef,tas->clef);
+        }
+    }else{ // SI 2 FILS : GAUCHE ET DROIT
+        if(inf(tas->fg->clef,tas->fd->clef)) // TEST CLEF PLUS PETIT ENTRE LES 2 SOUS ARBRES
+        {
+           if(inf(tas->fg->clef,tas->clef)) // SI LE SOUS ARBRE GAUCHE EST PLUS PETIT -> TEST SI PLUS PETIT QUE NOUVEAU RACINE
+            {
+                echangeClef(tas->fg->clef,tas->clef);
+                echangeRacine(tas->fg);
+            }
+        }else{
+            if(inf(tas->fd->clef,tas->clef)) // SI LE SOUS ARBRE DROIT EST PLUS PETIT -> TEST SI PLUS PETIT QUE NOUVEAU RACINE
+            {
+                echangeClef(tas->fd->clef,tas->clef);
+                echangeRacine(tas->fd);
+            }
+        }
+    }
+}
+
+void reequilibrage(TasArbre* tas)
+{
+    if(tas == NULL)
+    {
+        //printf("Reequilibrage : Fin du tas\n");
+        return;
+    }
+    reequilibrage(tas->fg);
+    reequilibrage(tas->fd);
+    echangeRacine(tas);
+}
+
+void reequilibrageRemontee(TasArbre* tas)
+{
+    if(tas->parent == NULL)
+    {
+        //printf("ReequilibrageRemontee : Fin du tas\n");
+        return;
+    }
+    if(inf(tas->clef,tas->parent->clef))
+    {
+        echangeClef(tas->clef,tas->parent->clef);
+        reequilibrageRemontee(tas->parent);
+    }
+}
+
 void majHauteurAjout(TasArbre* tas)
 {
     // ARRIVEE A LA RACINE
@@ -77,7 +136,8 @@ void majNoeudAjout(TasArbre* tas)
     majNoeudAjout(tas->parent);
 }
 
-void ajout (TasArbre * tas, Clef128* clef, int V)
+/*
+void ajoutBis (TasArbre * tas, Clef128* clef, int V)
 {
     // ARBRE VIDE
     if(tas->clef == NULL){
@@ -156,27 +216,70 @@ void ajout (TasArbre * tas, Clef128* clef, int V)
     }
 
 }
+*/
 
-void affichageTasArbre(TasArbre* tas) // Parcours prefixe
+void ajout (TasArbre * tas, Clef128* clef, int V)
 {
-    if(tas->clef == NULL)
-    {
-        printf("AffichageTasArbre : Tas vide\n");
+    // ARBRE VIDE
+    if(tas->clef == NULL){
+        tas->clef = copy(clef);
+        tas->hauteur += 1;
+        tas->noeud += 1;
         return;
     }
-    affichageClef(tas->clef);
-    printf("hauteur = %d\n", tas->hauteur);
-    printf("noeud = %d\n", tas->noeud);
-    if(tas->fg != NULL)
-    {
-        printf("-------GAUCHE--------\n");
-        affichageTasArbre(tas->fg);
+    // CLEF EXISTANT
+    if(eg(tas->clef, clef)){
+        printf("La clef est déjà dans le tas\n");
+        return;
     }
-    if(tas->fd != NULL)
+
+    // INSERTION
+    if(tas->fg == NULL)
     {
-        printf("-------DROIT--------\n");
-        affichageTasArbre(tas->fd);
+        tas->fg = creerNoeud(clef);
+        tas->fg->parent = tas;
+        majHauteurAjout(tas);
+        majNoeudAjout(tas);
+        if(V)
+        {
+            reequilibrageRemontee(tas->fg);
+        }
+        return;
     }
+    else{
+        if(tas->fd == NULL)
+        {
+            tas->fd = creerNoeud(clef);
+            tas->fd->parent = tas;
+            majNoeudAjout(tas);
+            if(V)
+            {
+                reequilibrageRemontee(tas->fd);
+            }
+            return;
+        }
+    }
+
+    if(tas->fg->noeud == pow(2,(tas->fg->hauteur))-1) // si le sous arbre gauche est rempli
+    {
+        if(tas->fd->noeud == pow(2,(tas->fd->hauteur))-1) // si le sous arbre droit est rempli
+        {
+            if(tas->fg->hauteur == tas->fd->hauteur) // si les feuilles sont au meme niveau
+            {
+                ajout(tas->fg,clef,V);
+            }
+            else{
+                ajout(tas->fd,clef,V);
+            }
+        }
+        else{
+            ajout(tas->fd,clef,V);
+        }
+    }
+    else{
+        ajout(tas->fg,clef,V);
+    }
+
 }
 
 TasArbre* ajoutsIteratifs(Clef128* clefs[], int len, int V)
@@ -188,39 +291,6 @@ TasArbre* ajoutsIteratifs(Clef128* clefs[], int len, int V)
         ajout(tas, newClef, V);
     }
     return tas;
-}
-
-void echangeRacine(TasArbre* tas)
-{
-    // RACINE
-    if(tas->fg == NULL && tas->fd == NULL)
-    {
-        //printf("Echange Racine : Fin du tas\n");
-        return;
-    }
-    // PAS DE SOUS ARBRE DROIT
-    if(tas->fd == NULL)
-    {
-        if(inf(tas->fg->clef,tas->clef))
-        {
-            echangeClef(tas->fg->clef,tas->clef);
-        }
-    }else{ // SI 2 FILS : GAUCHE ET DROIT
-        if(inf(tas->fg->clef,tas->fd->clef)) // TEST CLEF PLUS PETIT ENTRE LES 2 SOUS ARBRES
-        {
-           if(inf(tas->fg->clef,tas->clef)) // SI LE SOUS ARBRE GAUCHE EST PLUS PETIT -> TEST SI PLUS PETIT QUE NOUVEAU RACINE
-            {
-                echangeClef(tas->fg->clef,tas->clef);
-                echangeRacine(tas->fg);
-            }
-        }else{
-            if(inf(tas->fd->clef,tas->clef)) // SI LE SOUS ARBRE DROIT EST PLUS PETIT -> TEST SI PLUS PETIT QUE NOUVEAU RACINE
-            {
-                echangeClef(tas->fd->clef,tas->clef);
-                echangeRacine(tas->fd);
-            }
-        }
-    }
 }
 
 void majHauteurSuppr(TasArbre* tas)
@@ -320,18 +390,6 @@ Clef128 supprMin (TasArbre* tas, TasArbre* racine)
     return tmp;
 }
 
-void reequilibrage(TasArbre* tas)
-{
-    if(tas == NULL)
-    {
-        //printf("Reequilibrage : Fin du tas\n");
-        return;
-    }
-    reequilibrage(tas->fg);
-    reequilibrage(tas->fd);
-    echangeRacine(tas);
-}
-
 TasArbre* construction(Clef128* clefs[], int len)
 {
     TasArbre* tas = initialisation();
@@ -365,6 +423,28 @@ void Union(TasArbre* tasUnion, TasArbre* tas1, TasArbre* tas2)
     ajoutTas(tasUnion,tas1);
     ajoutTas(tasUnion, tas2);
     reequilibrage(tasUnion);
+}
+
+void affichageTasArbre(TasArbre* tas) // Parcours prefixe
+{
+    if(tas->clef == NULL)
+    {
+        printf("AffichageTasArbre : Tas vide\n");
+        return;
+    }
+    affichageClef(tas->clef);
+    printf("hauteur = %d\n", tas->hauteur);
+    printf("noeud = %d\n", tas->noeud);
+    if(tas->fg != NULL)
+    {
+        printf("-------GAUCHE--------\n");
+        affichageTasArbre(tas->fg);
+    }
+    if(tas->fd != NULL)
+    {
+        printf("-------DROIT--------\n");
+        affichageTasArbre(tas->fd);
+    }
 }
 
 void delete(TasArbre* tas)

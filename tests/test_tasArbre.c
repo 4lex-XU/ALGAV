@@ -85,7 +85,6 @@ int main(int argc, char** argv){
     printf("\n");
     printf("-------UNION--------\n");
     affichageTasArbre(tasUnion);
-    
 
     fclose(file);
     fclose(file2);
