@@ -55,9 +55,11 @@ void ajout (TasTableau * tas, Clef128 clef)
         tas->capacite *= 2;
         tas->tab = (Clef128*)realloc(tas->tab, sizeof(Clef128)*tas->capacite);
     }
+    // On ajoute la clef à la fin du tableau
     int i = tas->taille;
     tas->tab[i] = clef;
     tas->taille++;
+    // On remonte la clef à sa place
     while (i > 0 && inf(&clef, &tas->tab[(i-1)/2])) { // Tant que la clef est plus petite que son père
         echanger(&tas->tab[i], &tas->tab[(i-1)/2]); // On remonte la clef
         i = (i-1)/2;
