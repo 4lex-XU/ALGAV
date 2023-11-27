@@ -17,7 +17,7 @@ double mesurerTemps(TasTableau * (*fonction)(Clef128**, int, int), Clef128 **cle
     return (double)(fin - debut) / CLOCKS_PER_SEC;
 }
 
-int main(int argc, char** argv){
+int main(){
 
     FILE * file = NULL;
     FILE * fichier = NULL;

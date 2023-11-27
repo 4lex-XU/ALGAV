@@ -262,7 +262,7 @@ Clef128 supprMin (TasArbre* tas, TasArbre* racine)
     if(tas->clef == NULL && dernier == NULL)
     {
         printf("SuppMin : Tas vide\n");
-        return (Clef128){0, 0, 0, 0};
+        return (Clef128){0, 0, 0, 0, ""};
     }
 
     if(tas->fg == NULL && dernier == NULL) // 1 noeud 

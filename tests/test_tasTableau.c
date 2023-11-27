@@ -70,7 +70,7 @@ int main(int argc, char** argv){
 
     // FERMETURE
     fclose(file);
-    deleteClef(clefs, NB_CLEF);
+    deleteClefs(clefs, NB_CLEF);
     delete(t1);
     delete(t2);
     delete(t3);

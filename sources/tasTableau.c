@@ -40,7 +40,7 @@ Clef128 supprMin (TasTableau * tas)
 {
     if (tas->taille == 0) { // Si le tas est vide on retourne clef vide
         printf("Tas vide\n");
-        return (Clef128){0, 0, 0, 0};
+        return (Clef128){0, 0, 0, 0, ""};
     }
     Clef128 min = tas->tab[0];
     tas->tab[0] = tas->tab[tas->taille-1];
