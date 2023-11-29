@@ -12,8 +12,7 @@ double mesurerTempsUnion(TasArbre* tas1, TasArbre* tas2)
 {
     clock_t debut, fin;
     debut = clock();
-    TasArbre* tasUnion = initialisation();
-    Union(tasUnion, tas1, tas2);
+    TasArbre* tasUnion = Union(tas1, tas2);
     fin = clock();
     delete(tasUnion);
     return (double)(fin - debut) / CLOCKS_PER_SEC;
@@ -92,7 +91,7 @@ int main()
             clefs2[j] = clef;
             j++;
         }
-
+        
         TasArbre* tas1 = construction(clefs, taille);
         TasArbre* tas2 = construction(clefs2, taille);
         double tempsUnion = mesurerTempsUnion(tas1, tas2);
