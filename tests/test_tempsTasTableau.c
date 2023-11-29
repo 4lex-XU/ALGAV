@@ -38,20 +38,61 @@ int main(){
     // TESTS DE TEMPS
     int tailles[] = {1000, 5000, 10000, 20000, 50000, 80000, 120000, 200000};
     int nbTailles = sizeof(tailles) / sizeof(tailles[0]);
-    char * jeux[8] = 
+    char * jeux[40] = 
     {   "./cles_alea/jeu_1_nb_cles_1000.txt",
+        "./cles_alea/jeu_2_nb_cles_1000.txt",
+        "./cles_alea/jeu_3_nb_cles_1000.txt",
+        "./cles_alea/jeu_4_nb_cles_1000.txt",
+        "./cles_alea/jeu_5_nb_cles_1000.txt",
+
         "./cles_alea/jeu_1_nb_cles_5000.txt",
+        "./cles_alea/jeu_2_nb_cles_5000.txt",
+        "./cles_alea/jeu_3_nb_cles_5000.txt",
+        "./cles_alea/jeu_4_nb_cles_5000.txt",
+        "./cles_alea/jeu_5_nb_cles_5000.txt",
+
         "./cles_alea/jeu_1_nb_cles_10000.txt",
+        "./cles_alea/jeu_2_nb_cles_10000.txt",
+        "./cles_alea/jeu_3_nb_cles_10000.txt",
+        "./cles_alea/jeu_4_nb_cles_10000.txt",
+        "./cles_alea/jeu_5_nb_cles_10000.txt",
+
         "./cles_alea/jeu_1_nb_cles_20000.txt",
+        "./cles_alea/jeu_2_nb_cles_20000.txt",
+        "./cles_alea/jeu_3_nb_cles_20000.txt",
+        "./cles_alea/jeu_4_nb_cles_20000.txt",
+        "./cles_alea/jeu_5_nb_cles_20000.txt",
+
         "./cles_alea/jeu_1_nb_cles_50000.txt",
+        "./cles_alea/jeu_2_nb_cles_50000.txt",
+        "./cles_alea/jeu_3_nb_cles_50000.txt",
+        "./cles_alea/jeu_4_nb_cles_50000.txt",
+        "./cles_alea/jeu_5_nb_cles_50000.txt",
+
         "./cles_alea/jeu_1_nb_cles_80000.txt",
+        "./cles_alea/jeu_2_nb_cles_80000.txt",
+        "./cles_alea/jeu_3_nb_cles_80000.txt",
+        "./cles_alea/jeu_4_nb_cles_80000.txt",
+        "./cles_alea/jeu_5_nb_cles_80000.txt",
+
         "./cles_alea/jeu_1_nb_cles_120000.txt",
-        "./cles_alea/jeu_1_nb_cles_200000.txt"
+        "./cles_alea/jeu_2_nb_cles_120000.txt",
+        "./cles_alea/jeu_3_nb_cles_120000.txt",
+        "./cles_alea/jeu_4_nb_cles_120000.txt",
+        "./cles_alea/jeu_5_nb_cles_120000.txt",
+
+        "./cles_alea/jeu_1_nb_cles_200000.txt",
+        "./cles_alea/jeu_2_nb_cles_200000.txt",
+        "./cles_alea/jeu_3_nb_cles_200000.txt",
+        "./cles_alea/jeu_4_nb_cles_200000.txt",
+        "./cles_alea/jeu_5_nb_cles_200000.txt"
     };
 
-    for (int i = 0; i < nbTailles; i++) {
+    double tempsMoyenConstruction = 0;
+    double tempsMoyenAjoutsIteratifs = 0;
 
-        int taille = tailles[i];
+    for (int i = 0; i < nbTailles*5; i++) {
+        int taille = tailles[i/5];
         // OUVERTURE
         //printf("%s\n", jeux[i]);
         if((file = fopen(jeux[i], "r")) == NULL)
@@ -62,21 +103,27 @@ int main(){
         
         Clef128* clefs[taille];
         char buffer[MAX];
-        int i = 0;
+        int j = 0;
 
         // LECTURE DES CLES DANS LE FICHIER
         while(fgets(buffer, MAX, file) != NULL)
         {
             //printf("%s\n", buffer);
             Clef128* clef = hexaToUnsigned(buffer);
-            clefs[i] = clef;
-            i++;
+            clefs[j] = clef;
+            j++;
         }
-        double tempsAjoutsIteratifs = mesurerTempsAjoutsIteratifs(clefs, 0, taille);
-        double tempsConstruction = mesurerTempsConstruction(clefs, 0, taille);
 
-        fprintf(fichier, "Taille: %d, ajoutsIteratifs: %f, construction: %f\n", taille, tempsAjoutsIteratifs, tempsConstruction);   
-        
+        tempsMoyenAjoutsIteratifs += mesurerTempsAjoutsIteratifs(clefs, 0, taille);
+        tempsMoyenConstruction += mesurerTempsConstruction(clefs, 0, taille);
+
+        if((i+1)%5 == 0){
+            tempsMoyenAjoutsIteratifs /= 5;
+            tempsMoyenConstruction /= 5;
+            fprintf(fichier, "Taille: %d, ajoutsIteratifs: %f, construction: %f\n", taille, tempsMoyenAjoutsIteratifs, tempsMoyenConstruction);   
+            tempsMoyenAjoutsIteratifs = 0;
+            tempsMoyenConstruction = 0;
+        }
         // Libérer la mémoire
         deleteClefs(clefs, taille);
         fclose(file);
