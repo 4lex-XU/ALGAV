@@ -133,88 +133,6 @@ void majNoeudAjout(TasArbre* tas)
     majNoeudAjout(tas->parent);
 }
 
-/*
-void ajoutBis (TasArbre * tas, Clef128* clef, int V)
-{
-    // ARBRE VIDE
-    if(tas->clef == NULL){
-        tas->clef = copy(clef);
-        tas->hauteur += 1;
-        tas->noeud += 1;
-        return;
-    }
-    // CLEF EXISTANT
-    if(eg(tas->clef, clef)){
-        printf("La clef est déjà dans le tas\n");
-        return;
-    }
-
-    // INSERTION
-    if(tas->fg == NULL)
-    {
-        tas->fg = creerNoeud(clef);
-        tas->fg->parent = tas;
-        majHauteurAjout(tas);
-        majNoeudAjout(tas);
-        if(inf(clef, tas->clef) && V)
-        {
-            echangeClef(tas->clef, clef);
-        }
-        return;
-    }
-    else{
-        if(tas->fd == NULL)
-        {
-            tas->fd = creerNoeud(clef);
-            tas->fd->parent = tas;
-            majNoeudAjout(tas);
-            if(inf(clef, tas->clef) && V)
-            {
-                echangeClef(tas->clef, clef);
-            }
-            return;
-        }
-    }
-
-    if(tas->fg->noeud == pow(2,(tas->fg->hauteur))-1) // si le sous arbre gauche est rempli
-    {
-        if(tas->fd->noeud == pow(2,(tas->fd->hauteur))-1) // si le sous arbre droit est rempli
-        {
-            if(tas->fg->hauteur == tas->fd->hauteur) // si les feuilles sont au meme niveau
-            {
-                if(inf(clef, tas->clef) && V)
-                {
-                    echangeClef(tas->clef, clef);
-                }
-                ajout(tas->fg,clef,V);
-            }
-            else{
-                if(inf(clef, tas->clef) && V)
-                {
-                    echangeClef(tas->clef, clef);
-                }
-                ajout(tas->fd,clef,V);
-            }
-        }
-        else{
-            if(inf(clef, tas->clef) && V)
-            {
-                echangeClef(tas->clef, clef);
-            }
-            ajout(tas->fd,clef,V);
-        }
-    }
-    else{
-        if(inf(clef, tas->clef) && V)
-        {
-            echangeClef(tas->clef, clef);
-        }
-        ajout(tas->fg,clef,V);
-    }
-
-}
-*/
-
 void ajout (TasArbre * tas, Clef128* clef)
 {
     // ARBRE VIDE
@@ -436,7 +354,7 @@ TasArbre* Union(TasArbre* tas1, TasArbre* tas2)
     TasArbre* premier = creerNoeud(tas1->clef);
     newliste->tete = ajoutListe(premier);
     newliste->queue = newliste->tete;
-    TasArbre* tasArenvoie = newliste->tete->noeud;
+    TasArbre* tasFinal = newliste->tete->noeud;
 
     Liste* tasAcopie = (Liste*)malloc(sizeof(Liste));
     tasAcopie->tete = ajoutListe(tas1);
@@ -513,10 +431,11 @@ TasArbre* Union(TasArbre* tas1, TasArbre* tas2)
         tasAcopie2->tete = tasAcopie2->tete->suiv;
     }
 
+    reequilibrage(tasFinal);
     deleteListe(li);
     deleteListe(li2);
     deleteListe(li3);
-    return tasArenvoie;
+    return tasFinal;
 }
 
 void affichageTasArbre(TasArbre* tas) // Parcours prefixe
