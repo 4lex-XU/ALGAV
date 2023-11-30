@@ -77,18 +77,6 @@ void echangeRacine(TasArbre* tas)
     }
 }
 
-void reequilibrage(TasArbre* tas)
-{
-    if(tas == NULL)
-    {
-        //printf("Reequilibrage : Fin du tas\n");
-        return;
-    }
-    reequilibrage(tas->fg);
-    reequilibrage(tas->fd);
-    echangeRacine(tas);
-}
-
 void reequilibrageRemontee(TasArbre* tas)
 {
     if(tas->parent == NULL)
@@ -303,18 +291,37 @@ Element* ajoutListe(TasArbre* noeud)
     Element* elt = (Element*)malloc(sizeof(Element));
     elt->noeud = noeud;
     elt->suiv = NULL;
+    elt->pre = NULL;
     return elt;
 }
 
-void deleteListe(Liste* liste)
+void deleteElement(Element* tete)
 {
-    while(liste->tete != NULL)
+    while(tete != NULL)
     {
-        Element* elt = liste->tete;
-        liste->tete = liste->tete->suiv;
+        Element* elt = tete;
+        tete = tete->suiv;
         free(elt);
     }
-    free(liste);
+}
+
+void reequilibrageDescente(Element* tete, int len)
+{
+    Element* tmp = tete;
+    for(int i = 0; i<(len/2); i++)
+    { 
+        tmp = tmp->suiv;
+    }
+    Element* noeud = tmp;
+    for(int i = 0; i<(len/2)+1; i++)
+    {
+        if(noeud == NULL)
+        {
+            break;
+        }
+        echangeRacine(noeud->noeud);
+        noeud = noeud->pre;
+    }
 }
 
 TasArbre* construction(Clef128* clefs[], int len)
@@ -323,28 +330,34 @@ TasArbre* construction(Clef128* clefs[], int len)
     TasArbre* premier = creerNoeud(clefs[0]);
     liste->tete = ajoutListe(premier);
     liste->queue = liste->tete;
-    Liste* li = liste;
+    Element* supp = liste->tete;
+    Element* reequilibrage = liste->tete;
     TasArbre* tas = liste->tete->noeud;
     for(int i = 1; i<len; i++)
     {
         if(liste->tete->noeud->fg == NULL)
         {
             liste->tete->noeud->fg = creerNoeud(clefs[i]);
+            liste->tete->noeud->fg->parent = liste->tete->noeud;
             liste->queue->suiv = ajoutListe(liste->tete->noeud->fg);
+            liste->queue->suiv->pre = liste->queue;
             liste->queue = liste->queue->suiv;
 
         }else{
             if(liste->tete->noeud->fd == NULL)
             {
                 liste->tete->noeud->fd = creerNoeud(clefs[i]);
+                liste->tete->noeud->fd->parent = liste->tete->noeud;
                 liste->queue->suiv = ajoutListe(liste->tete->noeud->fd);
+                liste->queue->suiv->pre = liste->queue;
                 liste->queue = liste->queue->suiv;
                 liste->tete = liste->tete->suiv;
             }
         }
     }
-    reequilibrage(tas);
-    deleteListe(li);
+    reequilibrageDescente(reequilibrage, len);
+    deleteElement(supp);
+    free(liste);
     return tas;
 }
 
@@ -359,8 +372,10 @@ TasArbre* Union(TasArbre* tas1, TasArbre* tas2)
     Liste* tasAcopie = (Liste*)malloc(sizeof(Liste));
     tasAcopie->tete = ajoutListe(tas1);
     tasAcopie->queue = tasAcopie->tete;
-    Liste* li = newliste;
-    Liste* li2 = tasAcopie;
+    Element* supp1 = newliste->tete;
+    Element* supp2 = tasAcopie->tete;
+    Element* reequilibrage = newliste->tete;
+    int len = 1; // nombre de noeud;
     while(tasAcopie->tete != NULL)
     {
         if(tasAcopie->tete->noeud->fg)
@@ -382,14 +397,18 @@ TasArbre* Union(TasArbre* tas1, TasArbre* tas2)
 
         if(newliste->tete->noeud->fg == NULL)
         {
+            len++;
             newliste->tete->noeud->fg = creerNoeud(tasAcopie->tete->noeud->clef);
             newliste->queue->suiv = ajoutListe(newliste->tete->noeud->fg);
+            newliste->queue->suiv->pre = newliste->queue;
             newliste->queue = newliste->queue->suiv;
         }else{
             if(newliste->tete->noeud->fd == NULL)
             {
+                len++;
                 newliste->tete->noeud->fd = creerNoeud(tasAcopie->tete->noeud->clef);
                 newliste->queue->suiv = ajoutListe(newliste->tete->noeud->fd);
+                newliste->queue->suiv->pre = newliste->queue;
                 newliste->queue = newliste->queue->suiv;
                 newliste->tete = newliste->tete->suiv;
             }
@@ -399,7 +418,7 @@ TasArbre* Union(TasArbre* tas1, TasArbre* tas2)
     Liste* tasAcopie2 = (Liste*)malloc(sizeof(Liste));
     tasAcopie2->tete = ajoutListe(tas2);
     tasAcopie2->queue = tasAcopie2->tete;
-    Liste* li3 = tasAcopie2;
+    Element* supp3 = tasAcopie2->tete;
     while(tasAcopie2->tete != NULL)
     {
         if(tasAcopie2->tete->noeud->fg)
@@ -415,26 +434,32 @@ TasArbre* Union(TasArbre* tas1, TasArbre* tas2)
     
         if(newliste->tete->noeud->fg == NULL)
         {
+            len++;
             newliste->tete->noeud->fg = creerNoeud(tasAcopie2->tete->noeud->clef);
             newliste->queue->suiv = ajoutListe(newliste->tete->noeud->fg);
+            newliste->queue->suiv->pre = newliste->queue;
             newliste->queue = newliste->queue->suiv;
 
         }else{
             if(newliste->tete->noeud->fd == NULL)
             {
+                len++;
                 newliste->tete->noeud->fd = creerNoeud(tasAcopie2->tete->noeud->clef);
                 newliste->queue->suiv = ajoutListe(newliste->tete->noeud->fd);
+                newliste->queue->suiv->pre = newliste->queue;
                 newliste->queue = newliste->queue->suiv;
                 newliste->tete = newliste->tete->suiv;
             }
         }
         tasAcopie2->tete = tasAcopie2->tete->suiv;
     }
-
-    reequilibrage(tasFinal);
-    deleteListe(li);
-    deleteListe(li2);
-    deleteListe(li3);
+    reequilibrageDescente(reequilibrage, len);
+    deleteElement(supp1);
+    deleteElement(supp2);
+    deleteElement(supp3);
+    free(newliste);
+    free(tasAcopie);
+    free(tasAcopie2);
     return tasFinal;
 }
 

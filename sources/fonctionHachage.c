@@ -65,8 +65,14 @@ unsigned int MD5(char* chaine)
     Clef128* clef = hexaToUnsigned("0x1032547698BADCFEEFCDAB8967452301");
     
     //Preparation du message(padding) :
+    int lenInit = strlen(chaine);
+    strcat(chaine, "1");
     int len = strlen(chaine);
-    
-
+    while(len%512 != 448)
+    {
+        strcat(chaine, "0");
+        len++;
+    }
+    strcpy(chaine, lenInit);
 
 }

@@ -66,7 +66,7 @@ int main(int argc, char** argv){
     affichageTasArbre(t1);
     
     // CONSTRUCTION
-    TasArbre* t2 = construction(clefs, 5);
+    TasArbre* t2 = construction(clefs, 15);
     printf("\n");
     printf("-------CONSTRUCTION--------\n");
     affichageTasArbre(t2);

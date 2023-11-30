@@ -16,6 +16,7 @@ typedef struct Element Element;
 struct Element {
     TasArbre* noeud;
     struct Element* suiv;
+    struct Element* pre;
 };
 
 typedef struct Liste Liste;
@@ -31,7 +32,7 @@ TasArbre* creerNoeud(Clef128* clef);
 void echangeClef(Clef128* a, Clef128* b);
 void echangeRacine(TasArbre* tas);
 void reequilibrageRemontee(TasArbre* tas);
-void reequilibrage(TasArbre* tas);
+void reequilibrageDescente(Element* tete, int len);
 void majHauteurAjout(TasArbre* tas);
 void majNoeudAjout(TasArbre* tas);
 void majHauteurSuppr(TasArbre* tas);
@@ -40,7 +41,7 @@ void ajout (TasArbre * tas, Clef128* clef);
 TasArbre* ajoutsIteratifs (Clef128* clefs[], int len);
 Clef128 supprMin (TasArbre* tas, TasArbre* racine);
 Element* ajoutListe(TasArbre* noeud);
-void deleteListe(Liste* liste);
+void deleteElement(Element* tete);
 TasArbre* construction(Clef128* clefs[], int len);
 TasArbre* Union(TasArbre* tas1, TasArbre* tas2);
 void affichageTasArbre(TasArbre* tas);
