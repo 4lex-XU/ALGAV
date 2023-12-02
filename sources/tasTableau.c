@@ -19,6 +19,7 @@ void echanger (Clef128 * a, Clef128 * b)
 }
 
 // fonction récursive qui fait descendre le père à la bonne place
+// complexité en O(log n)
 void reequilibrerTas (TasTableau * tas, int i) 
 {
     int min = i;
@@ -30,6 +31,7 @@ void reequilibrerTas (TasTableau * tas, int i)
     if (droite < tas->taille && inf(&tas->tab[droite], &tas->tab[min])) {
         min = droite;
     }
+    // Si le minimum a changé, on échange et on rééquilibre le sous-arbre
     if (min != i) {
         echanger(&tas->tab[i], &tas->tab[min]);
         reequilibrerTas(tas, min);

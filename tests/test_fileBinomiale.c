@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../headers/clef128.h"
-#include "../headers/tasTableau.h"
+#include "../headers/fileBinomiale.h"
 #include <time.h>
 #include <math.h>
 
@@ -38,42 +38,42 @@ int main(int argc, char** argv){
         i++;
     }
 
-    TasTableau* t1 = ajoutsIteratifs(clefs, 0, 20);
-    printf("-------AJOUT ITERATIF--------\n");
-    printf("-------TAS Tableau (AVANT)--------\n");
-    affichageTasTableau(t1);
-
-    Clef128 min = supprMin(t1);
-    printf("------CLEF MINIMUM------\n");
-    affichageClef(&min);
-    printf("-------TAS TABLEAU (APRES)--------\n");
-    affichageTasTableau(t1);
-
-    printf("\n");
-
-    /*TasTableau* t2 = construction(clefs, 7, 13);
+    FileBinomiale * F1 = construction(clefs, 0, 13);
     printf("-------CONSTRUCTION--------\n");
     printf("-------TAS Tableau (AVANT)--------\n");
-    affichageTasTableau(t2);
+    affichageFileBinomiale(F1);
 
-    min = supprMin(t2);
-    printf("------CLEF MINIMUM------\n");
-    affichageClef(&min);
+    FileBinomiale * F1A = supprMin(F1);
+    
     printf("-------TAS TABLEAU (APRES)--------\n");
-    affichageTasTableau(t2);
+    affichageFileBinomiale(F1A);
 
     printf("\n");
-    TasTableau* t3 = Union(t1, t2);
+    FileBinomiale* F2 = construction(clefs, 14, 27);
+    printf("-------CONSTRUCTION--------\n");
+    printf("-------TAS Tableau (AVANT)--------\n");
+    affichageFileBinomiale(F2);
+
+    FileBinomiale * F2A = supprMin(F2);
+
+    printf("-------TAS TABLEAU (APRES)--------\n");
+    affichageFileBinomiale(F2A);
+
+    printf("\n");
+    
+    FileBinomiale* F3 = Union(F1, F2);
     printf("-------UNION--------\n");
     printf("-------TAS Tableau (AVANT)--------\n");
-    affichageTasTableau(t3);*/
+    affichageFileBinomiale(F3);
 
     // FERMETURE
     fclose(file);
     deleteClefs(clefs, NB_CLEF);
-    delete(t1);
-    /*delete(t2);
-    delete(t3);*/
+    deleteFile(F1);
+    deleteFile(F1A);
+    deleteFile(F2);
+    deleteFile(F2A);
+    deleteFile(F3);
 
     return 0;
 }

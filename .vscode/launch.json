@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/alexx/Downloads/projet/ALGAV/sources",
-      "program": "c:/Users/alexx/Downloads/projet/ALGAV/sources/build/Debug/outDebug",
+      "cwd": "c:/Users/alexx/Downloads/ALGAV/sources",
+      "program": "c:/Users/alexx/Downloads/ALGAV/sources/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
