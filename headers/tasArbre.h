@@ -12,23 +12,39 @@ struct tasArbre {
     int noeud; // nombre de noeud present dans l'arbre
 };
 
-Clef128 supprMin (TasArbre* tas, TasArbre* racine);
-void ajout (TasArbre * tas, Clef128* clef, int V); // V = 1 indique si il faut faire la verification des tailles des clés
-TasArbre* ajoutsIteratifs (Clef128* clefs[], int len,int V);
+typedef struct Element Element;
+struct Element {
+    TasArbre* noeud;
+    struct Element* suiv;
+    struct Element* pre;
+};
+
+typedef struct Liste Liste;
+struct Liste
+{
+    Element* tete;
+    Element* queue;
+};
+
+TasArbre* initialisation();
+Clef128* copy(Clef128* clef);
 TasArbre* creerNoeud(Clef128* clef);
 void echangeClef(Clef128* a, Clef128* b);
-void affichageTasArbre(TasArbre* tas);
 void echangeRacine(TasArbre* tas);
+void reequilibrageRemontee(TasArbre* tas);
+void reequilibrageDescente(Element* tete, int len);
 void majHauteurAjout(TasArbre* tas);
 void majNoeudAjout(TasArbre* tas);
 void majHauteurSuppr(TasArbre* tas);
 void majNoeudSuppr(TasArbre* tas);
+void ajout (TasArbre * tas, Clef128* clef);
+TasArbre* ajoutsIteratifs (Clef128* clefs[], int len);
+Clef128 supprMin (TasArbre* tas, TasArbre* racine);
+Element* ajoutListe(TasArbre* noeud);
+void deleteElement(Element* tete);
 TasArbre* construction(Clef128* clefs[], int len);
-void Union(TasArbre* tasUnion, TasArbre* tas1, TasArbre* tas2);
-void reequilibrage(TasArbre* tas);
-TasArbre* initialisation();
+TasArbre* Union(TasArbre* tas1, TasArbre* tas2);
+void affichageTasArbre(TasArbre* tas);
 void delete(TasArbre* tas);
-Clef128* copy(Clef128* clef);
-void ajoutTasUnion(TasArbre* newTas, TasArbre* tas);
 
 #endif

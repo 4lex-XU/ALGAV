@@ -12,7 +12,7 @@ double mesurerTempsAjoutsIteratifs(Clef128 **clefs, int len)
 {
     clock_t debut, fin;
     debut = clock();
-    TasArbre* t = ajoutsIteratifs(clefs, len, 1);
+    TasArbre* t = ajoutsIteratifs(clefs, len);
     fin = clock();
     delete(t);
     return (double)(fin - debut) / CLOCKS_PER_SEC;

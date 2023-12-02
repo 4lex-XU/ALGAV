@@ -95,9 +95,7 @@ int main()
         TasTableau* tas2 = construction(clefs2, 0, taille);
         double tempsUnion = mesurerTempsUnion(tas1, tas2);
 
-        printf("Taille: %d, Union: %f\n", taille, tempsUnion);
         fprintf(fichier, "Taille: %d, Union: %f\n", taille, tempsUnion);   
-        printf("fait\n");
         
         // Libérer la mémoire
         deleteClefs(clefs, taille);

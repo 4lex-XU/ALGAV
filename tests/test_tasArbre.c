@@ -50,9 +50,9 @@ int main(int argc, char** argv){
         clefs2[j] = clef;
         j++;
     }
-
+    
     // AJOUTS ITERATIFS
-    TasArbre* t1 = ajoutsIteratifs(clefs, 10, 1);
+    TasArbre* t1 = ajoutsIteratifs(clefs, 5);
     printf("-------AJOUTS ITERATIFS--------\n");
     affichageTasArbre(t1);
     
@@ -66,7 +66,7 @@ int main(int argc, char** argv){
     affichageTasArbre(t1);
     
     // CONSTRUCTION
-    TasArbre* t2 = construction(clefs, 10);
+    TasArbre* t2 = construction(clefs, 15);
     printf("\n");
     printf("-------CONSTRUCTION--------\n");
     affichageTasArbre(t2);
@@ -80,12 +80,11 @@ int main(int argc, char** argv){
     printf("\n");
     printf("-------T2--------\n");
     affichageTasArbre(tas2);
-    TasArbre* tasUnion = initialisation();
-    Union(tasUnion, tas1, tas2);
+    TasArbre* tasUnion = Union(tas1, tas2);
     printf("\n");
     printf("-------UNION--------\n");
     affichageTasArbre(tasUnion);
-
+    
     fclose(file);
     fclose(file2);
 

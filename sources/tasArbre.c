@@ -30,13 +30,10 @@ Clef128* copy(Clef128* clef)
 
 TasArbre* creerNoeud(Clef128* clef)
 {
-    TasArbre* noeud = (TasArbre*)malloc(sizeof(TasArbre));
-    noeud->clef = clef;
-    noeud->fd = NULL;
-    noeud->fg = NULL;
-    noeud->parent = NULL;
-    noeud->hauteur = 1;
-    noeud->noeud = 1;
+    TasArbre* noeud = initialisation();
+    noeud->clef = copy(clef);
+    noeud->hauteur += 1;
+    noeud->noeud += 1;
     return noeud;
 }
 
@@ -78,18 +75,6 @@ void echangeRacine(TasArbre* tas)
             }
         }
     }
-}
-
-void reequilibrage(TasArbre* tas)
-{
-    if(tas == NULL)
-    {
-        //printf("Reequilibrage : Fin du tas\n");
-        return;
-    }
-    reequilibrage(tas->fg);
-    reequilibrage(tas->fd);
-    echangeRacine(tas);
 }
 
 void reequilibrageRemontee(TasArbre* tas)
@@ -136,8 +121,7 @@ void majNoeudAjout(TasArbre* tas)
     majNoeudAjout(tas->parent);
 }
 
-/*
-void ajoutBis (TasArbre * tas, Clef128* clef, int V)
+void ajout (TasArbre * tas, Clef128* clef)
 {
     // ARBRE VIDE
     if(tas->clef == NULL){
@@ -159,10 +143,7 @@ void ajoutBis (TasArbre * tas, Clef128* clef, int V)
         tas->fg->parent = tas;
         majHauteurAjout(tas);
         majNoeudAjout(tas);
-        if(inf(clef, tas->clef) && V)
-        {
-            echangeClef(tas->clef, clef);
-        }
+        reequilibrageRemontee(tas->fg);
         return;
     }
     else{
@@ -171,10 +152,7 @@ void ajoutBis (TasArbre * tas, Clef128* clef, int V)
             tas->fd = creerNoeud(clef);
             tas->fd->parent = tas;
             majNoeudAjout(tas);
-            if(inf(clef, tas->clef) && V)
-            {
-                echangeClef(tas->clef, clef);
-            }
+            reequilibrageRemontee(tas->fd);
             return;
         }
     }
@@ -185,110 +163,28 @@ void ajoutBis (TasArbre * tas, Clef128* clef, int V)
         {
             if(tas->fg->hauteur == tas->fd->hauteur) // si les feuilles sont au meme niveau
             {
-                if(inf(clef, tas->clef) && V)
-                {
-                    echangeClef(tas->clef, clef);
-                }
-                ajout(tas->fg,clef,V);
+                ajout(tas->fg,clef);
             }
             else{
-                if(inf(clef, tas->clef) && V)
-                {
-                    echangeClef(tas->clef, clef);
-                }
-                ajout(tas->fd,clef,V);
+                ajout(tas->fd,clef);
             }
         }
         else{
-            if(inf(clef, tas->clef) && V)
-            {
-                echangeClef(tas->clef, clef);
-            }
-            ajout(tas->fd,clef,V);
+            ajout(tas->fd,clef);
         }
     }
     else{
-        if(inf(clef, tas->clef) && V)
-        {
-            echangeClef(tas->clef, clef);
-        }
-        ajout(tas->fg,clef,V);
-    }
-
-}
-*/
-
-void ajout (TasArbre * tas, Clef128* clef, int V)
-{
-    // ARBRE VIDE
-    if(tas->clef == NULL){
-        tas->clef = copy(clef);
-        tas->hauteur += 1;
-        tas->noeud += 1;
-        return;
-    }
-    // CLEF EXISTANT
-    if(eg(tas->clef, clef)){
-        printf("La clef est déjà dans le tas\n");
-        return;
-    }
-
-    // INSERTION
-    if(tas->fg == NULL)
-    {
-        tas->fg = creerNoeud(clef);
-        tas->fg->parent = tas;
-        majHauteurAjout(tas);
-        majNoeudAjout(tas);
-        if(V)
-        {
-            reequilibrageRemontee(tas->fg);
-        }
-        return;
-    }
-    else{
-        if(tas->fd == NULL)
-        {
-            tas->fd = creerNoeud(clef);
-            tas->fd->parent = tas;
-            majNoeudAjout(tas);
-            if(V)
-            {
-                reequilibrageRemontee(tas->fd);
-            }
-            return;
-        }
-    }
-
-    if(tas->fg->noeud == pow(2,(tas->fg->hauteur))-1) // si le sous arbre gauche est rempli
-    {
-        if(tas->fd->noeud == pow(2,(tas->fd->hauteur))-1) // si le sous arbre droit est rempli
-        {
-            if(tas->fg->hauteur == tas->fd->hauteur) // si les feuilles sont au meme niveau
-            {
-                ajout(tas->fg,clef,V);
-            }
-            else{
-                ajout(tas->fd,clef,V);
-            }
-        }
-        else{
-            ajout(tas->fd,clef,V);
-        }
-    }
-    else{
-        ajout(tas->fg,clef,V);
+        ajout(tas->fg,clef);
     }
 
 }
 
-TasArbre* ajoutsIteratifs(Clef128* clefs[], int len, int V)
+TasArbre* ajoutsIteratifs(Clef128* clefs[], int len)
 {
     TasArbre* tas = initialisation();
     for(int i = 0; i<len; i++)
     {
-        Clef128* newClef = copy(clefs[i]);
-        ajout(tas, newClef, V);
+        ajout(tas, clefs[i]);
     }
     return tas;
 }
@@ -390,39 +286,181 @@ Clef128 supprMin (TasArbre* tas, TasArbre* racine)
     return tmp;
 }
 
+Element* ajoutListe(TasArbre* noeud)
+{
+    Element* elt = (Element*)malloc(sizeof(Element));
+    elt->noeud = noeud;
+    elt->suiv = NULL;
+    elt->pre = NULL;
+    return elt;
+}
+
+void deleteElement(Element* tete)
+{
+    while(tete != NULL)
+    {
+        Element* elt = tete;
+        tete = tete->suiv;
+        free(elt);
+    }
+}
+
+void reequilibrageDescente(Element* tete, int len)
+{
+    Element* tmp = tete;
+    for(int i = 0; i<(len/2); i++)
+    { 
+        tmp = tmp->suiv;
+    }
+    Element* noeud = tmp;
+    for(int i = 0; i<(len/2)+1; i++)
+    {
+        if(noeud == NULL)
+        {
+            break;
+        }
+        echangeRacine(noeud->noeud);
+        noeud = noeud->pre;
+    }
+}
+
 TasArbre* construction(Clef128* clefs[], int len)
 {
-    TasArbre* tas = initialisation();
-    for(int i = 0; i<len; i++)
+    Liste* liste = (Liste*)malloc(sizeof(Liste));
+    TasArbre* premier = creerNoeud(clefs[0]);
+    liste->tete = ajoutListe(premier);
+    liste->queue = liste->tete;
+    Element* supp = liste->tete;
+    Element* reequilibrage = liste->tete;
+    TasArbre* tas = liste->tete->noeud;
+    for(int i = 1; i<len; i++)
     {
-        Clef128* newClef = copy(clefs[i]);
-        ajout(tas, newClef, 0);
+        if(liste->tete->noeud->fg == NULL)
+        {
+            liste->tete->noeud->fg = creerNoeud(clefs[i]);
+            liste->tete->noeud->fg->parent = liste->tete->noeud;
+            liste->queue->suiv = ajoutListe(liste->tete->noeud->fg);
+            liste->queue->suiv->pre = liste->queue;
+            liste->queue = liste->queue->suiv;
+
+        }else{
+            if(liste->tete->noeud->fd == NULL)
+            {
+                liste->tete->noeud->fd = creerNoeud(clefs[i]);
+                liste->tete->noeud->fd->parent = liste->tete->noeud;
+                liste->queue->suiv = ajoutListe(liste->tete->noeud->fd);
+                liste->queue->suiv->pre = liste->queue;
+                liste->queue = liste->queue->suiv;
+                liste->tete = liste->tete->suiv;
+            }
+        }
     }
-    reequilibrage(tas);
+    reequilibrageDescente(reequilibrage, len);
+    deleteElement(supp);
+    free(liste);
     return tas;
 }
 
-void ajoutTasUnion(TasArbre* newTas, TasArbre* tas)
+TasArbre* Union(TasArbre* tas1, TasArbre* tas2)
 {
-    if(tas == NULL)
-    {
-        return;
-    }
-    Clef128* newClef = copy(tas->clef);
-    ajout(newTas, newClef, 0);
-    ajoutTasUnion(newTas, tas->fg);
-    ajoutTasUnion(newTas, tas->fd);
-}
+    Liste* newliste = (Liste*)malloc(sizeof(Liste));
+    TasArbre* premier = creerNoeud(tas1->clef);
+    newliste->tete = ajoutListe(premier);
+    newliste->queue = newliste->tete;
+    TasArbre* tasFinal = newliste->tete->noeud;
 
-void Union(TasArbre* tasUnion, TasArbre* tas1, TasArbre* tas2)
-{
-    if(tas1 == NULL || tas2 == NULL)
+    Liste* tasAcopie = (Liste*)malloc(sizeof(Liste));
+    tasAcopie->tete = ajoutListe(tas1);
+    tasAcopie->queue = tasAcopie->tete;
+    Element* supp1 = newliste->tete;
+    Element* supp2 = tasAcopie->tete;
+    Element* reequilibrage = newliste->tete;
+    int len = 1; // nombre de noeud;
+    while(tasAcopie->tete != NULL)
     {
-        return;
+        if(tasAcopie->tete->noeud->fg)
+        {
+            tasAcopie->queue->suiv = ajoutListe(tasAcopie->tete->noeud->fg);
+            tasAcopie->queue = tasAcopie->queue->suiv;
+        }
+        if(tasAcopie->tete->noeud->fd)
+        {
+            tasAcopie->queue->suiv = ajoutListe(tasAcopie->tete->noeud->fd);
+            tasAcopie->queue = tasAcopie->queue->suiv;
+        }
+
+        tasAcopie->tete = tasAcopie->tete->suiv;
+        if(tasAcopie->tete == NULL)
+        {
+            break;
+        }
+
+        if(newliste->tete->noeud->fg == NULL)
+        {
+            len++;
+            newliste->tete->noeud->fg = creerNoeud(tasAcopie->tete->noeud->clef);
+            newliste->queue->suiv = ajoutListe(newliste->tete->noeud->fg);
+            newliste->queue->suiv->pre = newliste->queue;
+            newliste->queue = newliste->queue->suiv;
+        }else{
+            if(newliste->tete->noeud->fd == NULL)
+            {
+                len++;
+                newliste->tete->noeud->fd = creerNoeud(tasAcopie->tete->noeud->clef);
+                newliste->queue->suiv = ajoutListe(newliste->tete->noeud->fd);
+                newliste->queue->suiv->pre = newliste->queue;
+                newliste->queue = newliste->queue->suiv;
+                newliste->tete = newliste->tete->suiv;
+            }
+        }
     }
-    ajoutTasUnion(tasUnion,tas1);
-    ajoutTasUnion(tasUnion, tas2);
-    reequilibrage(tasUnion);
+
+    Liste* tasAcopie2 = (Liste*)malloc(sizeof(Liste));
+    tasAcopie2->tete = ajoutListe(tas2);
+    tasAcopie2->queue = tasAcopie2->tete;
+    Element* supp3 = tasAcopie2->tete;
+    while(tasAcopie2->tete != NULL)
+    {
+        if(tasAcopie2->tete->noeud->fg)
+        {     
+            tasAcopie2->queue->suiv = ajoutListe(tasAcopie2->tete->noeud->fg);
+            tasAcopie2->queue = tasAcopie2->queue->suiv;
+        }
+        if(tasAcopie2->tete->noeud->fd)
+        {
+            tasAcopie2->queue->suiv = ajoutListe(tasAcopie2->tete->noeud->fd);
+            tasAcopie2->queue = tasAcopie2->queue->suiv;
+        }
+    
+        if(newliste->tete->noeud->fg == NULL)
+        {
+            len++;
+            newliste->tete->noeud->fg = creerNoeud(tasAcopie2->tete->noeud->clef);
+            newliste->queue->suiv = ajoutListe(newliste->tete->noeud->fg);
+            newliste->queue->suiv->pre = newliste->queue;
+            newliste->queue = newliste->queue->suiv;
+
+        }else{
+            if(newliste->tete->noeud->fd == NULL)
+            {
+                len++;
+                newliste->tete->noeud->fd = creerNoeud(tasAcopie2->tete->noeud->clef);
+                newliste->queue->suiv = ajoutListe(newliste->tete->noeud->fd);
+                newliste->queue->suiv->pre = newliste->queue;
+                newliste->queue = newliste->queue->suiv;
+                newliste->tete = newliste->tete->suiv;
+            }
+        }
+        tasAcopie2->tete = tasAcopie2->tete->suiv;
+    }
+    reequilibrageDescente(reequilibrage, len);
+    deleteElement(supp1);
+    deleteElement(supp2);
+    deleteElement(supp3);
+    free(newliste);
+    free(tasAcopie);
+    free(tasAcopie2);
+    return tasFinal;
 }
 
 void affichageTasArbre(TasArbre* tas) // Parcours prefixe
