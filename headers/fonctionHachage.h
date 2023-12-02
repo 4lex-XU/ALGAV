@@ -3,6 +3,6 @@
 
 char* decToBinary(int nb);
 unsigned int leftrotate(unsigned int nb, unsigned int decalage);
-unsigned int MD5(char* chaine);
+unsigned int* MD5(char* chaine);
 
 #endif

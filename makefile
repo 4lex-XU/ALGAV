@@ -11,7 +11,8 @@ CFLAGS = -I$(HEADER_DIR) -Wall -Wextra -Werror -std=c99 -pedantic -g
 
 # Cible par défaut
 all: $(BIN_DIR)/test_clef128 $(BIN_DIR)/test_tasArbre $(BIN_DIR)/test_tasTableau $(BIN_DIR)/test_tempsTasTableau \
-	$(BIN_DIR)/test_tempsTasArbre $(BIN_DIR)/test_tempsTasArbreUnion $(BIN_DIR)/test_tempsTasTableauUnion
+	$(BIN_DIR)/test_tempsTasArbre $(BIN_DIR)/test_tempsTasArbreUnion $(BIN_DIR)/test_tempsTasTableauUnion \
+	$(BIN_DIR)/test_fonctionHachage
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $^ -o $@
@@ -39,6 +40,9 @@ $(BIN_DIR)/test_tempsTasArbre: $(OBJ_DIR)/test_tempsTasArbre.o $(OBJ_DIR)/tasArb
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 
 $(BIN_DIR)/test_tempsTasArbreUnion: $(OBJ_DIR)/test_tempsTasArbreUnion.o $(OBJ_DIR)/tasArbre.o $(OBJ_DIR)/clef128.o | $(BIN_DIR)
+	$(CC) $(CFLAGS) $^ -o $@ -lm
+
+$(BIN_DIR)/test_fonctionHachage: $(OBJ_DIR)/test_fonctionHachage.o $(OBJ_DIR)/fonctionHachage.o | $(BIN_DIR)
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 
 # Création des répertoires si nécessaire
