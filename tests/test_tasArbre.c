@@ -52,7 +52,7 @@ int main(int argc, char** argv){
     }
     
     // AJOUTS ITERATIFS
-    TasArbre* t1 = ajoutsIteratifs(clefs, 5);
+    TasArbre* t1 = ajoutsIteratifs(clefs, 21);
     printf("-------AJOUTS ITERATIFS--------\n");
     affichageTasArbre(t1);
     
