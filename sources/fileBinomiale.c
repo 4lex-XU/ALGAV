@@ -2,263 +2,231 @@
 #include <stdlib.h>
 #include "../headers/fileBinomiale.h"
 
-int EstVide(TournoiBinomiale * T) 
+TournoiBinomial * Tournoi (Clef128 clef)
+{
+    TournoiBinomial * T = (TournoiBinomial *)malloc(sizeof(TournoiBinomial));
+    T->clef = clef;
+    T->degre = 0;
+    T->fils = NULL;
+    T->frere = NULL;
+    return T;
+}
+
+FileBinomiale * File(TournoiBinomial * T) 
+{
+    FileBinomiale *file = (FileBinomiale *)malloc(sizeof(FileBinomiale));
+    file->tete = (ElementFile *)malloc(sizeof(ElementFile));
+    file->tete->tournoi = T;
+    file->tete->suivant = NULL;
+    file->queue = file->tete;
+    return file;
+}
+
+int EstVideTournoi(TournoiBinomial * T) 
 {
     return T == NULL;
 }
 
-int Degre (TournoiBinomiale * T)
+int EstVideFile(FileBinomiale * F) 
 {
-    if (!T) return -1;
-    int degre = 0;
-    TournoiBinomiale * current = T->fils;
-    while (current)
-    {
-        degre++;
-        current = current->frere;
-    }
-    return degre;
+    return F == NULL || F->tete == NULL;   
 }
 
-TournoiBinomiale * Union2Tid(TournoiBinomiale * T1, TournoiBinomiale * T2) 
+int Degre(TournoiBinomial * T) 
 {
-    if (!T1 || !T2) return T1 ? T1 : T2;
-    if (inf(&T2->clef, &T1->clef)) {
-        // Échange T1 et T2
-        TournoiBinomiale *temp = T1;
-        T1 = T2;
-        T2 = temp;
-    }
-    T2->pere = T1;
-    T2->frere = T1->fils;
-    T1->fils = T2;
-    return T1;
+    return T ? T->degre : -1;
 }
 
-FileBinomiale * Decapite(TournoiBinomiale * T) 
+TournoiBinomial * MinDeg(FileBinomiale * F) 
 {
-    FileBinomiale *file = (FileBinomiale *)malloc(sizeof(FileBinomiale));
-    file->tournois = NULL;
-    for(TournoiBinomiale *current = T->fils; current != NULL;) {
-        TournoiBinomiale *next = current->frere;
-        current->frere = file->tournois;
-        current->pere = NULL;
-        file->tournois = current;
-        current = next;
+    if (EstVideFile(F)) return NULL;
+    TournoiBinomial * minTournoi = F->tete->tournoi;
+    ElementFile * current = F->tete->suivant;
+
+    while (current) {
+        if (Degre(current->tournoi) < Degre(minTournoi)) {
+            minTournoi = current->tournoi;
+        }
+        current = current->suivant;
+    }
+    return minTournoi;
+}
+
+FileBinomiale * Decapite(TournoiBinomial * T) 
+{
+    TournoiBinomial * current = T->fils->frere;
+    T->fils->frere = NULL;
+    FileBinomiale * file = File(T->fils);
+    while (current) {
+        TournoiBinomial * temp = current->frere;
+        current->frere = NULL;
+        file = AjoutMin(file, current);
+        current = temp;
     }
     free(T);
     return file;
 }
 
-FileBinomiale * File(TournoiBinomiale * T) 
-{
-    FileBinomiale *file = (FileBinomiale *)malloc(sizeof(FileBinomiale));
-    file->tournois = T;
-    return file;
-}
-
-TournoiBinomiale * initTournoiBinomial (Clef128 clef)
-{
-    TournoiBinomiale * t = (TournoiBinomiale*)malloc(sizeof(TournoiBinomiale));
-    t->clef = clef;
-    t->pere = NULL;
-    t->fils = NULL;
-    t->frere = NULL;
-    return t;
-}
-
-void affichageTournoiBinomial(TournoiBinomiale * T)
-{
-    if (!T) return;
-    affichageClef(&T->clef);
-    TournoiBinomiale * current = T->fils;
-    while (current)
-    {
-        affichageTournoiBinomial(current);
-        current = current->frere;
-    }
-}
-
-void affichageFileBinomiale(FileBinomiale * F)
-{
-    if (!F) return;
-    TournoiBinomiale * current = F->tournois;
-    printf("File Binomiale : \n");
-    while (current)
-    {
-        printf("Tournoi de degre %d : \n", Degre(current));
-        affichageTournoiBinomial(current);
-        current = current->frere;
-    }
-}
-
-int EstVideFile(FileBinomiale * F) 
-{
-    return F == NULL || F->tournois == NULL;
-}
-
-TournoiBinomiale * MinDeg(FileBinomiale * F) 
-{
-    if (EstVideFile(F)) return NULL;
-    TournoiBinomiale * minTournoi = F->tournois;
-    TournoiBinomiale * current = F->tournois->frere;
-
-    while (current) {
-        if (Degre(current) < Degre(minTournoi)) {
-            minTournoi = current;
-        }
-        current = current->frere;
-    }
-    return minTournoi;
-}
-
 // Retourne la file sans le tournoi de degré minimum
-FileBinomiale * Reste(FileBinomiale * F) {
+FileBinomiale * Reste(FileBinomiale * F) 
+{
     if (EstVideFile(F)) return NULL;
-    TournoiBinomiale * minTournoi = MinDeg(F);
     FileBinomiale * reste = (FileBinomiale *)malloc(sizeof(FileBinomiale));
-    // Si le tournoi min est le premier de la file
-    reste->tournois = F->tournois == minTournoi ? F->tournois->frere : F->tournois;
-
-    // Retirer le tournoi min de la file
-    TournoiBinomiale * current = F->tournois;
-    while (current && current->frere) {
-        if (current->frere == minTournoi) {
-            current->frere = minTournoi->frere;
-            break;
-        }
-        current = current->frere;
-    }
-
+    reste->tete = F->tete->suivant;
+    reste->queue = F->queue;
     return reste;
 }
 
-FileBinomiale * supprMin(FileBinomiale *file)
+TournoiBinomial * Union2Tid(TournoiBinomial * T1, TournoiBinomial * T2) 
 {
-    if (EstVideFile(file)) return file;
+    if (EstVideTournoi(T1)) return T2;
+    if (EstVideTournoi(T2)) return T1;
 
-    // Trouver le tournoi avec le minimum
-    TournoiBinomiale *tournoiMin = file->tournois;
-    TournoiBinomiale *prevMin = NULL;
-
-    TournoiBinomiale *current = file->tournois;
-    TournoiBinomiale *prev = NULL;
-
-    // Parcourir la file pour trouver le tournoi min
-    while (current != NULL) {
-        if (inf(&current->clef, &tournoiMin->clef)) {
-            tournoiMin = current;
-            prevMin = prev;
-        }
-        prev = current;
-        current = current->frere;
+    // On met le tournoi de plus petit degré en fils du tournoi de plus grand degré
+    if (inf(&T2->clef, &T1->clef)) {
+        TournoiBinomial * temp = T1;
+        T1 = T2;
+        T2 = temp;
     }
-
-    // Retirer le tournoi min de la file
-    if (prevMin != NULL) {
-        prevMin->frere = tournoiMin->frere;
-    } else {
-        file->tournois = tournoiMin->frere;
-    }
-
-    // Créer une nouvelle file avec les fils du tournoi min, décomposition du tournoi min
-    FileBinomiale *fileTemp = Decapite(tournoiMin);
-    printf("&----------------File temp : \n");
-    affichageFileBinomiale(fileTemp);
-
-
-    // Fusionner la nouvelle file avec la file restante
-    return Union(file, fileTemp);
+    T2->frere = T1->fils;
+    T1->fils = T2;
+    T1->degre++;
+    return T1;
 }
 
-// ajout d'un tournoi dans la file
-// complexité : O(log(n))
-FileBinomiale * ajout (FileBinomiale * F, TournoiBinomiale * T)
+FileBinomiale * Equilibrage(FileBinomiale * F) 
 {
-    if (EstVideFile(F))
-    {
-        F = (FileBinomiale*)malloc(sizeof(FileBinomiale));
-        F->tournois = T;
-        return F;
-    }
-    // ajout en tete
-    T->frere = F->tournois;
-    F->tournois = T;
+    if (EstVideFile(F)) return F;
+
     // faire l'union des tournois de meme degre
-    TournoiBinomiale * current = F->tournois;
-    TournoiBinomiale * prev = NULL;
-    TournoiBinomiale * next = current->frere;
+    ElementFile * current = F->tete;
+    ElementFile * next = current->suivant;
+    ElementFile * prev = NULL;
     // on parcourt la file
     while (next)
     {
         // on passe au tournoi suivant si le degre est different 
         // ou si le degre est le meme mais qu'il y a un autre tournoi de meme degre
-        if (Degre(current) != Degre(next) || (next->frere && Degre(next) == Degre(next->frere)))
+        if (Degre(current->tournoi) != Degre(next->tournoi) || (next->suivant && Degre(next->tournoi) == Degre(next->suivant->tournoi)))
         {
             prev = current;
             current = next;
         }
         // on fait l'union des tournois de meme degre
         // on supprime le tournoi qui n'est pas le plus petit
-        else if (inf(&current->clef, &next->clef))
+        else if (inf(&current->tournoi->clef, &next->tournoi->clef))
         {
             // on supprime le tournoi next de la file
-            current->frere = next->frere;
-            Union2Tid(current, next);
+            current->suivant = next->suivant;
+            current->tournoi = Union2Tid(current->tournoi, next->tournoi);
         }
         else
         {
             if (!prev)
             {
                 // on supprime le tournoi current de la file
-                F->tournois = next;
+                F->tete = next;
             }
             else
             {
-                prev->frere = next;
+                prev->suivant = next;
             }
-            Union2Tid(next, current);
+            next->tournoi = Union2Tid(current->tournoi, next->tournoi);
             current = next;
         }
-        next = current->frere;
+        next = current->suivant;
     }
     return F;
 }
 
-FileBinomiale * construction (Clef128* clefs[], int deb, int fin)
+FileBinomiale * AjoutMin(FileBinomiale * F, TournoiBinomial * T) 
 {
-    FileBinomiale * file = (FileBinomiale*)malloc(sizeof(FileBinomiale));
-    file->tournois = NULL;
-    for (int i = deb; i < fin; i++)
+    if (EstVideFile(F))
     {
-        affichageClef(clefs[i]);
-        TournoiBinomiale * t = initTournoiBinomial(*clefs[i]);
-        file = ajout(file, t);
+        F = File(T);
+        return F;
     }
-    return file;
+    // ajout en tete
+    ElementFile * newElement = (ElementFile *)malloc(sizeof(ElementFile));
+    newElement->tournoi = T;
+    newElement->suivant = F->tete;
+    F->tete = newElement;
+    return Equilibrage(F);
 }
 
-FileBinomiale * UFret(FileBinomiale * F1, FileBinomiale * F2, TournoiBinomiale * T)
+TournoiBinomial * TournoiMin(FileBinomiale * F) 
 {
-    if(EstVide(T)) 
+    // Trouver le tournoi avec le minimum
+    ElementFile * current = F->tete;
+    ElementFile * prev = NULL;
+    ElementFile * prevMin = NULL;
+    ElementFile * tournoiMin = current;
+
+    // Parcourir la file pour trouver le tournoi min
+    while (current) {
+        if (inf(&current->tournoi->clef, &tournoiMin->tournoi->clef)) {
+            tournoiMin = current;
+            prevMin = prev;
+        }
+        prev = current;
+        current = current->suivant;
+    }
+
+    // Retirer le tournoi min de la file
+    if (prevMin != NULL) {
+        prevMin->suivant = tournoiMin->suivant;
+    } else {
+        F->tete = tournoiMin->suivant;
+    }
+    return tournoiMin->tournoi;
+}
+
+FileBinomiale * SupprMin(FileBinomiale * F) 
+{
+    if (EstVideFile(F)) return F;
+
+    // Trouver le tournoi avec le minimum
+    TournoiBinomial * tournoiMin = TournoiMin(F);
+
+    // Créer une nouvelle file avec les fils du tournoi min, décomposition du tournoi min
+    FileBinomiale *fileTemp = Decapite(tournoiMin);
+
+    // Fusionner la nouvelle file avec la file restante
+    return Union(F, fileTemp);
+}
+
+FileBinomiale * Construction (Clef128 ** clefs, int debut, int fin)
+{
+    FileBinomiale * F = NULL;
+    for (int i = debut; i < fin; i++)
+    {
+        TournoiBinomial * T = Tournoi(*clefs[i]);
+        F = AjoutMin(F, T);
+    }
+    return F;
+}
+
+FileBinomiale * UFret(FileBinomiale * F1, FileBinomiale * F2, TournoiBinomial * T)
+{
+    if(EstVideTournoi(T)) 
     {
         if(EstVideFile(F1)) return F2;
         if(EstVideFile(F2)) return F1;
 
-        TournoiBinomiale * T1 = MinDeg(F1);
-        TournoiBinomiale * T2 = MinDeg(F2);
+        TournoiBinomial * T1 = MinDeg(F1);
+        TournoiBinomial * T2 = MinDeg(F2);
         int degreT1 = Degre(T1);
         int degreT2 = Degre(T2);
 
         if(degreT1 < degreT2) 
         {
             FileBinomiale * F = Union(Reste(F1), F2);
-            return ajout(F, T1);
+            return AjoutMin(F, T1);
         }
         else if(degreT2 < degreT1) 
         {
             FileBinomiale * F = Union(F1, Reste(F2));
-            return ajout(F, T2);
+            return AjoutMin(F, T2);
         }
         else 
         {
@@ -274,25 +242,24 @@ FileBinomiale * UFret(FileBinomiale * F1, FileBinomiale * F2, TournoiBinomiale *
             FileBinomiale * nouvelleFile = File(T);
             return Union(nouvelleFile, F2);
         } 
-
         if (EstVideFile(F2)) 
         {
             FileBinomiale * nouvelleFile = File(T);
             return Union(nouvelleFile, F1);
         }
 
-        TournoiBinomiale * T1 = MinDeg(F1);
-        TournoiBinomiale * T2 = MinDeg(F2);
+        TournoiBinomial * T1 = MinDeg(F1);
+        TournoiBinomial * T2 = MinDeg(F2);
 
         if (Degre(T) < Degre(T1) && Degre(T) < Degre(T2))
         {
-            return ajout(Union(F1, F2), T);
+            return AjoutMin(Union(F1, F2), T);
         }
         if (Degre(T) == Degre(T1) && Degre(T) == Degre(T2))
         {
             FileBinomiale * F1Reste = Reste(F1);
             FileBinomiale * F2Reste = Reste(F2);
-            return ajout(UFret(F1Reste, F2Reste, Union2Tid(T1, T2)), T);
+            return AjoutMin(UFret(F1Reste, F2Reste, Union2Tid(T1, T2)), T);
         }
         if (Degre(T) == Degre(T1) && Degre(T) < Degre(T2))
         {
@@ -313,28 +280,61 @@ FileBinomiale * Union(FileBinomiale * F1, FileBinomiale * F2)
     return UFret(F1, F2, NULL);
 }
 
-void delete(TournoiBinomiale * T)
+void affichageTournoiBinomial(TournoiBinomial * T)
 {
     if (!T) return;
-    TournoiBinomiale * current = T->fils;
+    affichageClef(&T->clef);
+    TournoiBinomial * current = T->fils;
     while (current)
     {
-        TournoiBinomiale * next = current->frere;
-        delete(current);
-        current = next;
+        affichageTournoiBinomial(current);
+        current = current->frere;
+    }
+}
+
+void affichageFileBinomiale(FileBinomiale * F)
+{
+    if (!F) return;
+    ElementFile * current = F->tete;
+    printf("-------FILE BINOMIALE--------\n");
+    while (current)
+    {
+        TournoiBinomial * currentTournoi = current->tournoi;
+        printf("Tournoi de degre %d : \n", Degre(currentTournoi));
+        affichageTournoiBinomial(currentTournoi);
+        current = current->suivant;
+    }
+}
+
+void deleteTournoiBinomial(TournoiBinomial * T)
+{
+    if (!T) return;
+    TournoiBinomial * current = T->fils;
+    while (current)
+    {
+        TournoiBinomial * temp = current->frere;
+        deleteTournoiBinomial(current);
+        current = temp;
     }
     free(T);
 }
 
-void deleteFile(FileBinomiale * F)
+void deleteElementFile(ElementFile * E)
+{
+    if (!E) return;
+    deleteTournoiBinomial(E->tournoi);
+    free(E);
+}
+
+void deleteFileBinomiale(FileBinomiale * F)
 {
     if (!F) return;
-    TournoiBinomiale * current = F->tournois;
+    ElementFile * current = F->tete;
     while (current)
     {
-        TournoiBinomiale * next = current->frere;
-        delete(current);
-        current = next;
+        ElementFile * temp = current->suivant;
+        deleteElementFile(current);
+        current = temp;
     }
     free(F);
 }

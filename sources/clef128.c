@@ -74,8 +74,9 @@ Clef128* hexaToUnsigned(char* clef)
 
 void affichageClef(Clef128* clef)
 {
-    printf("Clef = %s -> %u %u %u %u\n", 
-    clef->clef_hexa, clef->b32_4, clef->b32_3, clef->b32_2, clef->b32_1);
+    if(clef != NULL)
+        printf("Clef = %s -> %u %u %u %u\n", 
+        clef->clef_hexa, clef->b32_4, clef->b32_3, clef->b32_2, clef->b32_1);
 }
 
 void deleteClefs(Clef128 **clefs, int taille) {

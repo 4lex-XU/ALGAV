@@ -7,7 +7,7 @@
 #include <math.h>
 
 #define MAX 1000
-#define NB_CLEF 1000
+#define NB_CLEF 200000
 
 int main(int argc, char** argv){
 
@@ -37,43 +37,39 @@ int main(int argc, char** argv){
         clefs[i] = clef;
         i++;
     }
-
-    FileBinomiale * F1 = construction(clefs, 0, 13);
+    FileBinomiale* F1 = Construction(clefs, 0, 1000);
     printf("-------CONSTRUCTION--------\n");
-    printf("-------TAS Tableau (AVANT)--------\n");
     affichageFileBinomiale(F1);
 
-    FileBinomiale * F1A = supprMin(F1);
+    FileBinomiale * F1A = SupprMin(F1);
     
-    printf("-------TAS TABLEAU (APRES)--------\n");
+    printf("-------FILE BINOMIALE (APRES)--------\n");
     affichageFileBinomiale(F1A);
 
     printf("\n");
-    FileBinomiale* F2 = construction(clefs, 14, 27);
+    FileBinomiale* F2 = Construction(clefs, 0, 1000);
     printf("-------CONSTRUCTION--------\n");
-    printf("-------TAS Tableau (AVANT)--------\n");
+    printf("-------FILE BINOMIALE (AVANT)--------\n");
     affichageFileBinomiale(F2);
 
-    FileBinomiale * F2A = supprMin(F2);
+    FileBinomiale * F2A = SupprMin(F2);
 
-    printf("-------TAS TABLEAU (APRES)--------\n");
+    printf("-------FILE BINOMIALE (APRES)--------\n");
     affichageFileBinomiale(F2A);
 
     printf("\n");
     
-    FileBinomiale* F3 = Union(F1, F2);
+    FileBinomiale* F3 = Union(F1A, F2A);
     printf("-------UNION--------\n");
-    printf("-------TAS Tableau (AVANT)--------\n");
+    printf("-------FILE BINOMIALE UNION F1 F2--------\n");
     affichageFileBinomiale(F3);
 
     // FERMETURE
     fclose(file);
     deleteClefs(clefs, NB_CLEF);
-    deleteFile(F1);
-    deleteFile(F1A);
-    deleteFile(F2);
-    deleteFile(F2A);
-    deleteFile(F3);
+    deleteFileBinomiale(F1);
+    deleteFileBinomiale(F2);
+    deleteFileBinomiale(F3);
 
     return 0;
 }

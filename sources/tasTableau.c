@@ -101,7 +101,8 @@ void affichageTasTableau(TasTableau* tas)
         return;
     }
     for(int i = 0; i<tas->taille; i++)
-    {
+    {   
+        printf("%d : ", i  );
         affichageClef(&tas->tab[i]);
     }
 }

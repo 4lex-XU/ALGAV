@@ -38,7 +38,7 @@ int main(int argc, char** argv){
         i++;
     }
 
-    TasTableau* t1 = ajoutsIteratifs(clefs, 0, 20);
+    TasTableau* t1 = ajoutsIteratifs(clefs, 0, 7);
     printf("-------AJOUT ITERATIF--------\n");
     printf("-------TAS Tableau (AVANT)--------\n");
     affichageTasTableau(t1);
@@ -51,7 +51,7 @@ int main(int argc, char** argv){
 
     printf("\n");
 
-    /*TasTableau* t2 = construction(clefs, 7, 13);
+    TasTableau* t2 = construction(clefs, 7, 13);
     printf("-------CONSTRUCTION--------\n");
     printf("-------TAS Tableau (AVANT)--------\n");
     affichageTasTableau(t2);
@@ -65,15 +65,14 @@ int main(int argc, char** argv){
     printf("\n");
     TasTableau* t3 = Union(t1, t2);
     printf("-------UNION--------\n");
-    printf("-------TAS Tableau (AVANT)--------\n");
-    affichageTasTableau(t3);*/
+    affichageTasTableau(t3);
 
     // FERMETURE
     fclose(file);
     deleteClefs(clefs, NB_CLEF);
     delete(t1);
-    /*delete(t2);
-    delete(t3);*/
+    delete(t2);
+    delete(t3);
 
     return 0;
 }
