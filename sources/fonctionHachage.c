@@ -23,6 +23,15 @@ char* decToBinary(int nb)
     return tab;
 }
 
+unsigned char* asciiToBinary(char* chaine)
+{
+    int len = strlen(chaine);
+    unsigned char* tab = (unsigned char*)malloc(sizeof(unsigned char)*len*8+1);
+    tab[len*8] = '\0';
+    memcpy(tab, chaine, len);
+    return tab;
+}
+
 unsigned int leftrotate(unsigned int nb, unsigned int decalage)
 {
     return nb << decalage | nb >> (32-decalage);
@@ -52,34 +61,39 @@ unsigned int* MD5(char* chaine)
 
     //Preparation du message(padding) :
     int lenInit = strlen(chaine);
-    int zero = (448-(lenInit+1))%512;
-    int offset = (zero > 0) ? zero : 512-zero; //nombre de 0 à ajouter 
-    int len = lenInit+1+offset+64;
-    char* msg = (char*)malloc(sizeof(char)*len+1);
-    msg[len] = '\0';
-  
+    int len = lenInit*8;
+    int nbZero = (448-(len+1))%512;
+    int offset = (nbZero > 0) ? nbZero : 512-nbZero; //nombre de 0 à ajouter 
+    int lenFinal = len+1+offset+64; //taille du message après preparation
+    unsigned char* msg = (unsigned char*)malloc(sizeof(unsigned char)*lenFinal+1);
+    msg[lenFinal] = '\0';
+
     memcpy(msg, chaine, lenInit);
-    msg[lenInit] = (unsigned char)0x80;
+    msg[len] = 1;
     //strcat(msg, "1");
-    for(int i = 0; i<offset; i++)
+    for(int i = len+1; i<offset; i++)
     {
-        strcat(msg, "0");
+        //strcat(msg, "0");
+        msg[i] = 0;
     }
     char* bin = decToBinary(lenInit);
-    strcat(msg, bin);
-    printf("MSG = %s\n", msg);
+    //strcat(msg, bin);
 
+    int indice = len + 1 + offset;
+    memcpy(msg+indice, &bin, 64);
+    printf("MSG = %s\n", msg);
+    
     //Decoupage en blocs de 512 bits
-    int bit = 480;
-    int bloc = len/512;
-    unsigned int* w = (unsigned int*)malloc(sizeof(unsigned int)*32); //16 mots de 32 bits
+    int bit = 0;
+    int bloc = lenFinal/512;
+    unsigned int w[16]; //16 mots de 32 bits = 4o
     for(int b = 0; b<bloc; b++)
     {
+        
         for(int j = 0; j<16; j++)
         {
-            memcpy(&w[j],msg+bit, 32);
-            bit -= 32;
-            printf("W = %d\n", w[j]);
+            memcpy(&w[j],msg+bit, 4); //chaque case contient 32bits = 4o * 16 = 64o = 512bits
+            bit += 4;
         }
 
         unsigned int a = h0;
@@ -94,39 +108,38 @@ unsigned int* MD5(char* chaine)
             {
                 f = F(b,c,d);
                 g = i;
-            }else{
-                if(i >= 16 && i <= 31)
-                {
-                    f = F(d,b,c);
-                    g = (3*i + 5)%16;
-                }else{
-                    if(i >= 32 && i <= 47)
-                    {
-                        f = H(b,c,d);
-                        g = (3*i + 5)%16;
-                    }else{
-                        if(i >= 48 && i <= 63)
-                        {
-                            f = I(c,b,d);
-                            g = (7*i)%16;
-                        }
-                    }
-                }
             }
-            //fin pour
-            int temp = d;
+            if(i >= 16 && i <= 31)
+            {
+                f = F(d,b,c);
+                g = (5*i + 1)%16;
+            }
+            if(i >= 32 && i <= 47)
+            {
+                f = H(b,c,d);
+                g = (3*i + 5)%16;
+            }
+            if(i >= 48 && i <= 63)
+            {
+                f = I(c,b,d);
+                g = (7*i)%16;
+            }
+
+            unsigned int temp = d;
             d = c;
             c = b;
-            b = leftrotate((a+f+k[i]+w[g]), r[i]) + b;
+            b = b + leftrotate((a+f+k[i]+w[g]), r[i]);
             a = temp;
         
+            printf("a = %d\n", a);
+            printf("b = %d\n", b);
+            printf("c = %d\n", c);
+            printf("d = %d\n", d);
+            printf("-------------------\n");
+            
             printf("i = %d\n", i);
             printf("g = %d\n", g);
             printf("f = %d\n", f);
-            printf("k = %d\n", k[i]);
-            printf("w = %d\n", w[g]);
-            printf("r = %d\n", r[i]);
-
         }
         //fin pour
         //ajouter le resultat au bloc précédent : 
@@ -137,7 +150,7 @@ unsigned int* MD5(char* chaine)
     }
     //fin pour
     
-    free(msg);
+    //free(msg);
     //free(bin);
 
     unsigned int* h = (unsigned int*)malloc(sizeof(unsigned int) * 4);
