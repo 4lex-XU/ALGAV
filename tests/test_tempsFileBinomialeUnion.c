@@ -93,15 +93,14 @@ int main()
         FileBinomiale* F1 = Construction(clefs, 0, taille);
         FileBinomiale* F2 = Construction(clefs2, 0, taille);
 
-        double tempsUnion = mesurerTempsUnion(F1, F1);
-
+        double tempsUnion = mesurerTempsUnion(F1, F2);
         fprintf(fichier, "Taille: %d, Union: %f\n", taille, tempsUnion);   
         
         // Libérer la mémoire
-        deleteClefs(clefs, taille);
+        /*deleteClefs(clefs, taille);
         deleteClefs(clefs2, taille);
         deleteFileBinomiale(F1);
-        deleteFileBinomiale(F2);
+        deleteFileBinomiale(F2);*/
         fclose(file);
     }
 }

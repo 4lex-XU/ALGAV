@@ -63,7 +63,7 @@ FileBinomiale * Decapite(TournoiBinomial * T)
         file = AjoutMin(file, current);
         current = temp;
     }
-    free(T);
+    //free(T);
     return file;
 }
 

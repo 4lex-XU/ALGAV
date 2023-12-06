@@ -37,7 +37,7 @@ int main(int argc, char** argv){
         clefs[i] = clef;
         i++;
     }
-    FileBinomiale* F1 = Construction(clefs, 0, 1000);
+    FileBinomiale* F1 = Construction(clefs, 0, 500);
     printf("-------CONSTRUCTION--------\n");
     affichageFileBinomiale(F1);
 
@@ -47,7 +47,7 @@ int main(int argc, char** argv){
     affichageFileBinomiale(F1A);
 
     printf("\n");
-    FileBinomiale* F2 = Construction(clefs, 0, 1000);
+    FileBinomiale* F2 = Construction(clefs, 500, 1000);
     printf("-------CONSTRUCTION--------\n");
     printf("-------FILE BINOMIALE (AVANT)--------\n");
     affichageFileBinomiale(F2);
@@ -63,13 +63,8 @@ int main(int argc, char** argv){
     printf("-------UNION--------\n");
     printf("-------FILE BINOMIALE UNION F1 F2--------\n");
     affichageFileBinomiale(F3);
-
     // FERMETURE
     fclose(file);
-    deleteClefs(clefs, NB_CLEF);
-    deleteFileBinomiale(F1);
-    deleteFileBinomiale(F2);
-    deleteFileBinomiale(F3);
 
     return 0;
 }
