@@ -23,15 +23,6 @@ char* decToBinary(int nb)
     return tab;
 }
 
-unsigned char* asciiToBinary(char* chaine)
-{
-    int len = strlen(chaine);
-    unsigned char* tab = (unsigned char*)malloc(sizeof(unsigned char)*len*8+1);
-    tab[len*8] = '\0';
-    memcpy(tab, chaine, len);
-    return tab;
-}
-
 unsigned int leftrotate(unsigned int nb, unsigned int decalage)
 {
     return nb << decalage | nb >> (32-decalage);
@@ -69,17 +60,13 @@ unsigned int* MD5(char* chaine)
     msg[lenFinal] = '\0';
 
     memcpy(msg, chaine, lenInit);
-    msg[len] = 1;
-    //strcat(msg, "1");
-    for(int i = len+1; i<offset; i++)
+    msg[lenInit] = (unsigned char)0x80;
+    for(int i = lenInit+1; i<offset; i++)
     {
-        //strcat(msg, "0");
         msg[i] = 0;
     }
     char* bin = decToBinary(lenInit);
-    //strcat(msg, bin);
-
-    int indice = len + 1 + offset;
+    int indice = lenInit + 1 + offset;
     memcpy(msg+indice, &bin, 64);
     printf("MSG = %s\n", msg);
     
@@ -94,6 +81,8 @@ unsigned int* MD5(char* chaine)
         {
             memcpy(&w[j],msg+bit, 4); //chaque case contient 32bits = 4o * 16 = 64o = 512bits
             bit += 4;
+            printf("msg+bit = %s\n", msg+bit);
+            printf("w = %d\n", w[14]);
         }
 
         unsigned int a = h0;
@@ -103,7 +92,7 @@ unsigned int* MD5(char* chaine)
         
         for(int i = 0; i<64; i++)
         {
-            unsigned int f,g;
+            unsigned int f, g;
             if(i >= 0 && i <= 15)
             {
                 f = F(b,c,d);
@@ -130,16 +119,10 @@ unsigned int* MD5(char* chaine)
             c = b;
             b = b + leftrotate((a+f+k[i]+w[g]), r[i]);
             a = temp;
-        
-            printf("a = %d\n", a);
-            printf("b = %d\n", b);
-            printf("c = %d\n", c);
-            printf("d = %d\n", d);
-            printf("-------------------\n");
+
+            printf("w = %d\n", w[g]);
+
             
-            printf("i = %d\n", i);
-            printf("g = %d\n", g);
-            printf("f = %d\n", f);
         }
         //fin pour
         //ajouter le resultat au bloc précédent : 
@@ -159,4 +142,13 @@ unsigned int* MD5(char* chaine)
     h[2] = h2;
     h[3] = h3;
     return h;
+}
+int main(){
+
+    unsigned int* md5 = MD5("Et l’unique cordeau des trompettes marines");
+    printf("MD5 = %02x %02x %02x %02x\n", md5[0], md5[1], md5[2], md5[3]);
+
+    free(md5);
+    
+    return 0;
 }
