@@ -37,14 +37,14 @@ void majHauteurAjout(TasArbre* tas);
 void majNoeudAjout(TasArbre* tas);
 void majHauteurSuppr(TasArbre* tas);
 void majNoeudSuppr(TasArbre* tas);
-void ajout (TasArbre * tas, Clef128* clef);
-TasArbre* ajoutsIteratifs (Clef128* clefs[], int len);
-Clef128 supprMin (TasArbre* tas, TasArbre* racine);
+void ajoutTasArbre (TasArbre * tas, Clef128* clef);
+TasArbre* ajoutsIteratifsTasArbre (Clef128* clefs[], int len);
+Clef128 supprMinTasArbre (TasArbre* tas, TasArbre* racine);
 Element* ajoutListe(TasArbre* noeud);
 void deleteElement(Element* tete);
-TasArbre* construction(Clef128* clefs[], int len);
-TasArbre* Union(TasArbre* tas1, TasArbre* tas2);
+TasArbre* constructionTasArbre(Clef128* clefs[], int len);
+TasArbre* UnionTasArbre(TasArbre* tas1, TasArbre* tas2);
 void affichageTasArbre(TasArbre* tas);
-void delete(TasArbre* tas);
+void deleteTasArbre(TasArbre* tas);
 
 #endif

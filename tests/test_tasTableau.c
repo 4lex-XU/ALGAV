@@ -38,12 +38,12 @@ int main(int argc, char** argv){
         i++;
     }
 
-    TasTableau* t1 = ajoutsIteratifs(clefs, 0, 7);
+    TasTableau* t1 = ajoutsIteratifsTasTableau(clefs, 0, 7);
     printf("-------AJOUT ITERATIF--------\n");
     printf("-------TAS Tableau (AVANT)--------\n");
     affichageTasTableau(t1);
 
-    Clef128 min = supprMin(t1);
+    Clef128 min = supprMinTasTableau(t1);
     printf("------CLEF MINIMUM------\n");
     affichageClef(&min);
     printf("-------TAS TABLEAU (APRES)--------\n");
@@ -51,28 +51,28 @@ int main(int argc, char** argv){
 
     printf("\n");
 
-    TasTableau* t2 = construction(clefs, 7, 13);
+    TasTableau* t2 = constructionTasTableau(clefs, 7, 13);
     printf("-------CONSTRUCTION--------\n");
     printf("-------TAS Tableau (AVANT)--------\n");
     affichageTasTableau(t2);
 
-    min = supprMin(t2);
+    min = supprMinTasTableau(t2);
     printf("------CLEF MINIMUM------\n");
     affichageClef(&min);
     printf("-------TAS TABLEAU (APRES)--------\n");
     affichageTasTableau(t2);
 
     printf("\n");
-    TasTableau* t3 = Union(t1, t2);
+    TasTableau* t3 = UnionTasTableau(t1, t2);
     printf("-------UNION--------\n");
     affichageTasTableau(t3);
 
     // FERMETURE
     fclose(file);
     deleteClefs(clefs, NB_CLEF);
-    delete(t1);
-    delete(t2);
-    delete(t3);
+    deleteTasTableau(t1);
+    deleteTasTableau(t2);
+    deleteTasTableau(t3);
 
     return 0;
 }

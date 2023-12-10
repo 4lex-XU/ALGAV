@@ -12,9 +12,9 @@ double mesurerTempsUnion(TasArbre* tas1, TasArbre* tas2)
 {
     clock_t debut, fin;
     debut = clock();
-    TasArbre* tasUnion = Union(tas1, tas2);
+    TasArbre* tasUnion = UnionTasArbre(tas1, tas2);
     fin = clock();
-    delete(tasUnion);
+    deleteTasArbre(tasUnion);
     return (double)(fin - debut) / CLOCKS_PER_SEC;
 }
 
@@ -92,8 +92,8 @@ int main()
             j++;
         }
         
-        TasArbre* tas1 = construction(clefs, taille);
-        TasArbre* tas2 = construction(clefs2, taille);
+        TasArbre* tas1 = constructionTasArbre(clefs, taille);
+        TasArbre* tas2 = constructionTasArbre(clefs2, taille);
         double tempsUnion = mesurerTempsUnion(tas1, tas2);
 
         fprintf(fichier, "Taille: %d, Union: %f\n", taille, tempsUnion);   
@@ -101,8 +101,8 @@ int main()
         // Libérer la mémoire
         deleteClefs(clefs, taille);
         deleteClefs(clefs2, taille);
-        delete(tas1);
-        delete(tas2);
+        deleteTasArbre(tas1);
+        deleteTasArbre(tas2);
         fclose(file);
     }
 }

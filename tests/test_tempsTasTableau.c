@@ -11,18 +11,18 @@
 double mesurerTempsAjoutsIteratifs(Clef128 **clefs, int deb, int fi) {
     clock_t debut, fin;
     debut = clock();
-    TasTableau * t = ajoutsIteratifs(clefs, deb, fi);
+    TasTableau * t = ajoutsIteratifsTasTableau(clefs, deb, fi);
     fin = clock();
-    delete(t);
+    deleteTasTableau(t);
     return (double)(fin - debut) / CLOCKS_PER_SEC;
 }
 
 double mesurerTempsConstruction(Clef128 **clefs, int deb, int fi) {
     clock_t debut, fin;
     debut = clock();
-    TasTableau * t = construction(clefs, deb, fi);
+    TasTableau * t = constructionTasTableau(clefs, deb, fi);
     fin = clock();
-    delete(t);
+    deleteTasTableau(t);
     return (double)(fin - debut) / CLOCKS_PER_SEC;
 }
 

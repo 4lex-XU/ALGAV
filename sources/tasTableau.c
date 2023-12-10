@@ -38,7 +38,7 @@ void reequilibrerTas (TasTableau * tas, int i)
     }
 }
 
-Clef128 supprMin (TasTableau * tas) 
+Clef128 supprMinTasTableau (TasTableau * tas) 
 {
     if (tas->taille == 0) { // Si le tas est vide on retourne clef vide
         printf("Tas vide\n");
@@ -51,7 +51,7 @@ Clef128 supprMin (TasTableau * tas)
     return min;
 }
 
-void ajout (TasTableau * tas, Clef128 clef) 
+void ajoutTasTableau (TasTableau * tas, Clef128 clef) 
 {
     if (tas->taille == tas->capacite) { // Si le tas est plein on double sa capacité
         tas->capacite *= 2;
@@ -69,17 +69,17 @@ void ajout (TasTableau * tas, Clef128 clef)
 }
 
 // Ajoute les clefs dans le tas une par une, méthode naïve
-TasTableau * ajoutsIteratifs (Clef128 * clefs[], int deb, int fin) 
+TasTableau * ajoutsIteratifsTasTableau (Clef128 * clefs[], int deb, int fin) 
 {
     TasTableau * tas = initTas(fin-deb);
     for (int i = deb; i < fin; i++) {
-        ajout(tas, *clefs[i]);
+        ajoutTasTableau(tas, *clefs[i]);
     }
     return tas;
 }
 
 // Construit un tas à partir d'un tableau de clefs, méthode plus efficace
-TasTableau * construction (Clef128 * clefs[], int deb, int fin)
+TasTableau * constructionTasTableau (Clef128 * clefs[], int deb, int fin)
 {
     int taille = fin-deb;
     TasTableau * tas = initTas(taille);
@@ -107,7 +107,7 @@ void affichageTasTableau(TasTableau* tas)
     }
 }
 
-TasTableau * Union(TasTableau *tas1, TasTableau *tas2) {
+TasTableau * UnionTasTableau(TasTableau *tas1, TasTableau *tas2) {
     if(tas1->taille == 0) return tas2;
     if(tas2->taille == 0) return tas1;
 
@@ -130,7 +130,7 @@ TasTableau * Union(TasTableau *tas1, TasTableau *tas2) {
     return tasUnion;
 }
 
-void delete(TasTableau *tas) {
+void deleteTasTableau(TasTableau *tas) {
     free(tas->tab);
     free(tas);
 }

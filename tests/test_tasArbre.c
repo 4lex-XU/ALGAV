@@ -52,12 +52,12 @@ int main(int argc, char** argv){
     }
     
     // AJOUTS ITERATIFS
-    TasArbre* t1 = ajoutsIteratifs(clefs, 21);
+    TasArbre* t1 = ajoutsIteratifsTasArbre(clefs, 21);
     printf("-------AJOUTS ITERATIFS--------\n");
     affichageTasArbre(t1);
     
     // SUPPRESSION
-    Clef128 min = supprMin(t1, t1);
+    Clef128 min = supprMinTasArbre(t1, t1);
     printf("\n");
     printf("------CLEF MINIMUM------\n");
     affichageClef(&min);
@@ -66,21 +66,21 @@ int main(int argc, char** argv){
     affichageTasArbre(t1);
     
     // CONSTRUCTION
-    TasArbre* t2 = construction(clefs, 15);
+    TasArbre* t2 = constructionTasArbre(clefs, 15);
     printf("\n");
     printf("-------CONSTRUCTION--------\n");
     affichageTasArbre(t2);
     
     // UNION
-    TasArbre* tas1 = construction(clefs, 5);
-    TasArbre* tas2 = construction(clefs2, 5);
+    TasArbre* tas1 = constructionTasArbre(clefs, 5);
+    TasArbre* tas2 = constructionTasArbre(clefs2, 5);
     printf("\n");
     printf("-------T1--------\n");
     affichageTasArbre(tas1);
     printf("\n");
     printf("-------T2--------\n");
     affichageTasArbre(tas2);
-    TasArbre* tasUnion = Union(tas1, tas2);
+    TasArbre* tasUnion = UnionTasArbre(tas1, tas2);
     printf("\n");
     printf("-------UNION--------\n");
     affichageTasArbre(tasUnion);
@@ -88,11 +88,11 @@ int main(int argc, char** argv){
     fclose(file);
     fclose(file2);
 
-    delete(t1);
-    delete(t2);
-    delete(tas1);
-    delete(tas2);
-    delete(tasUnion);
+    deleteTasArbre(t1);
+    deleteTasArbre(t2);
+    deleteTasArbre(tas1);
+    deleteTasArbre(tas2);
+    deleteTasArbre(tasUnion);
     deleteClefs(clefs, NB_CLEF);
     deleteClefs(clefs2, NB_CLEF);
 

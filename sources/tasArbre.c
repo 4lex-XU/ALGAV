@@ -121,7 +121,7 @@ void majNoeudAjout(TasArbre* tas)
     majNoeudAjout(tas->parent);
 }
 
-void ajout (TasArbre * tas, Clef128* clef)
+void ajoutTasArbre (TasArbre * tas, Clef128* clef)
 {
     // ARBRE VIDE
     if(tas->clef == NULL){
@@ -163,28 +163,28 @@ void ajout (TasArbre * tas, Clef128* clef)
         {
             if(tas->fg->hauteur == tas->fd->hauteur) // si les feuilles sont au meme niveau
             {
-                ajout(tas->fg,clef);
+                ajoutTasArbre(tas->fg,clef);
             }
             else{
-                ajout(tas->fd,clef);
+                ajoutTasArbre(tas->fd,clef);
             }
         }
         else{
-            ajout(tas->fd,clef);
+            ajoutTasArbre(tas->fd,clef);
         }
     }
     else{
-        ajout(tas->fg,clef);
+        ajoutTasArbre(tas->fg,clef);
     }
 
 }
 
-TasArbre* ajoutsIteratifs(Clef128* clefs[], int len)
+TasArbre* ajoutsIteratifsTasArbre(Clef128* clefs[], int len)
 {
     TasArbre* tas = initialisation();
     for(int i = 0; i<len; i++)
     {
-        ajout(tas, clefs[i]);
+        ajoutTasArbre(tas, clefs[i]);
     }
     return tas;
 }
@@ -219,7 +219,7 @@ void majNoeudSuppr(TasArbre* tas)
     majNoeudSuppr(tas->parent);
 }
 
-Clef128 supprMin (TasArbre* tas, TasArbre* racine) 
+Clef128 supprMinTasArbre (TasArbre* tas, TasArbre* racine) 
 {
     Clef128 tmp = *racine->clef;
     TasArbre* dernier = NULL;
@@ -260,18 +260,18 @@ Clef128 supprMin (TasArbre* tas, TasArbre* racine)
                     {
                         if(tas->fg->hauteur == tas->fd->hauteur) // si les feuilles sont au meme niveau
                         {
-                            supprMin(tas->fd, racine);
+                            supprMinTasArbre(tas->fd, racine);
                         }
                         else{
-                            supprMin(tas->fg, racine);
+                            supprMinTasArbre(tas->fg, racine);
                         }
                     }
                     else{
-                        supprMin(tas->fd, racine);
+                        supprMinTasArbre(tas->fd, racine);
                     }
                 }
                 else{
-                    supprMin(tas->fg, racine);
+                    supprMinTasArbre(tas->fg, racine);
                 }
             }
         }
@@ -324,7 +324,7 @@ void reequilibrageDescente(Element* tete, int len)
     }
 }
 
-TasArbre* construction(Clef128* clefs[], int len)
+TasArbre* constructionTasArbre(Clef128* clefs[], int len)
 {
     Liste* liste = (Liste*)malloc(sizeof(Liste));
     TasArbre* premier = creerNoeud(clefs[0]);
@@ -361,7 +361,7 @@ TasArbre* construction(Clef128* clefs[], int len)
     return tas;
 }
 
-TasArbre* Union(TasArbre* tas1, TasArbre* tas2)
+TasArbre* UnionTasArbre(TasArbre* tas1, TasArbre* tas2)
 {
     Liste* newliste = (Liste*)malloc(sizeof(Liste));
     TasArbre* premier = creerNoeud(tas1->clef);
@@ -485,7 +485,7 @@ void affichageTasArbre(TasArbre* tas) // Parcours prefixe
     }
 }
 
-void delete(TasArbre* tas)
+void deleteTasArbre(TasArbre* tas)
 {
     if(tas == NULL)
     {
@@ -493,7 +493,7 @@ void delete(TasArbre* tas)
     }
     free(tas->clef->clef_hexa);
     free(tas->clef);
-    delete(tas->fg);
-    delete(tas->fd);
+    deleteTasArbre(tas->fg);
+    deleteTasArbre(tas->fd);
     free(tas);
 }

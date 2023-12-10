@@ -49,19 +49,9 @@ unsigned int* MD5(char* chaine)
     unsigned char* msg = (unsigned char*)malloc(sizeof(unsigned char)*lenFinal);
     memset(msg, 0, lenFinal);
     memcpy(msg, chaine, lenInit);
-    msg[len] = 1;
-    //strcat(msg, "1");
-    for(int i = len+1; i<offset; i++)
-    {
-        //strcat(msg, "0");
-        msg[i] = 0;
-    }
-    char* bin = decToBinary(lenInit);
-    //strcat(msg, bin);
-
-    int indice = len + 1 + offset;
-    memcpy(msg+indice, &bin, 64);
-    printf("MSG = %s\n", msg);
+    msg[lenInit] = (unsigned char)0x80;
+    int indice = lenFinal-8;
+    memcpy(msg+indice, &len, 4);
     
     //Decoupage en blocs de 512 bits
     int bit = 0;
@@ -74,8 +64,6 @@ unsigned int* MD5(char* chaine)
         {
             memcpy(&w[j],msg+bit, 4); //chaque case contient 32bits = 4o * 16 = 64o = 512bits
             bit += 4;
-            printf("msg+bit = %s\n", msg+bit);
-            printf("w = %d\n", w[14]);
         }
 
         unsigned int a = h0;
@@ -112,16 +100,6 @@ unsigned int* MD5(char* chaine)
             c = b;
             b = b + leftrotate((a+f+k[i]+w[g]), r[i]);
             a = temp;
-        
-            printf("a = %d\n", a);
-            printf("b = %d\n", b);
-            printf("c = %d\n", c);
-            printf("d = %d\n", d);
-            printf("-------------------\n");
-            
-            printf("i = %d\n", i);
-            printf("g = %d\n", g);
-            printf("f = %d\n", f);
         }
         //fin pour
         //ajouter le resultat au bloc précédent : 
@@ -139,13 +117,4 @@ unsigned int* MD5(char* chaine)
     h[2] = inverse(h2);
     h[3] = inverse(h3);
     return h;
-}
-int main(){
-
-    unsigned int* md5 = MD5("Et l’unique cordeau des trompettes marines");
-    printf("MD5 = %02x %02x %02x %02x\n", md5[0], md5[1], md5[2], md5[3]);
-
-    free(md5);
-    
-    return 0;
 }
