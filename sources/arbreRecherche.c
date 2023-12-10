@@ -7,9 +7,21 @@ int max(int a, int b) {
     return (a > b) ? a : b;
 }
 
+Clef128* copy(Clef128* clef)
+{
+    Clef128* res = (Clef128*)malloc(sizeof(Clef128));
+    res->b32_1 = clef->b32_1;
+    res->b32_2 = clef->b32_2;
+    res->b32_3 = clef->b32_3;
+    res->b32_4 = clef->b32_4;
+    res->clef_hexa = (char*)malloc(sizeof(char)*33);
+    strcpy(res->clef_hexa, clef->clef_hexa);
+    return res;
+}
+
 Noeud* creerNoeud(Clef128* clef) {
     Noeud* noeud = (Noeud*)malloc(sizeof(Noeud));
-    noeud->clef = clef;
+    noeud->clef = copy(clef);
     noeud->gauche = NULL;
     noeud->droite = NULL;
     return noeud;
@@ -55,7 +67,7 @@ int rechercher(Noeud* racine, Clef128* clef) {
     if (racine == NULL)
         return 0;
     
-    if (eg(racine->clef, clef))
+    if (eg(racine->clef, clef) && (strcmp(racine->clef->clef_hexa, clef->clef_hexa) == 0))
         return 1;
 
     if (inf(racine->clef, clef))
@@ -108,20 +120,4 @@ int getBalanceFactor(Noeud * N) {
     if (N == NULL)
         return 0;
     return hauteur(N->gauche) - hauteur(N->droite);
-}
-
-int main () {
-    Noeud* racine = NULL;
-    Clef128* clef = hexaToUnsigned("0x00000000000000000000000000000000");
-    racine = inserer(racine, clef);
-    clef = hexaToUnsigned("0x00000000000000000000000000000001");
-    racine = inserer(racine, clef);
-    clef = hexaToUnsigned("0x00000000000000000000000000000002");
-    racine = inserer(racine, clef);
-    clef = hexaToUnsigned("0x00000000000000000000000000003");
-    racine = inserer(racine, clef);
-
-    printf("%d\n", rechercher(racine, hexaToUnsigned("0x00000000000000000000000000000000")));
-    
-    return 0;
 }

@@ -13,7 +13,8 @@ CFLAGS = -I$(HEADER_DIR) -Wall -Wextra -Werror -std=c99 -pedantic -g
 all: $(BIN_DIR)/test_clef128 $(BIN_DIR)/test_tasArbre $(BIN_DIR)/test_tasTableau $(BIN_DIR)/test_tempsTasTableau \
 	$(BIN_DIR)/test_tempsTasArbre $(BIN_DIR)/test_tempsTasArbreUnion $(BIN_DIR)/test_tempsTasTableauUnion \
 	$(BIN_DIR)/test_fonctionHachage $(BIN_DIR)/test_fileBinomiale $(BIN_DIR)/test_tempsFileBinomiale \
-	$(BIN_DIR)/test_tempsFileBinomialeUnion $(BIN_DIR)/test_tempsTasMin_File_Construction
+	$(BIN_DIR)/test_tempsFileBinomialeUnion $(BIN_DIR)/test_arbreRecherche $(BIN_DIR)/shakespeare \
+	$(BIN_DIR)/test_tempsConstruction $(BIN_DIR)/test_tempsAjout $(BIN_DIR)/test_tempsSupp
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $^ -o $@
@@ -55,7 +56,19 @@ $(BIN_DIR)/test_tempsFileBinomialeUnion: $(OBJ_DIR)/test_tempsFileBinomialeUnion
 $(BIN_DIR)/test_fonctionHachage: $(OBJ_DIR)/test_fonctionHachage.o $(OBJ_DIR)/fonctionHachage.o | $(BIN_DIR)
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 
-$(BIN_DIR)/test_tempsTasMin_File_Construction: $(OBJ_DIR)/test_tempsTasMin_File_Construction.o $(OBJ_DIR)/fonctionHachage.o $(OBJ_DIR)/tasArbre.o $(OBJ_DIR)/tasTableau.o $(OBJ_DIR)/fileBinomiale.o $(OBJ_DIR)/clef128.o $(OBJ_DIR)/listeChaine.o | $(BIN_DIR)
+$(BIN_DIR)/test_arbreRecherche: $(OBJ_DIR)/test_arbreRecherche.o $(OBJ_DIR)/clef128.o $(OBJ_DIR)/arbreRecherche.o | $(BIN_DIR)
+	$(CC) $(CFLAGS) $^ -o $@ -lm
+
+$(BIN_DIR)/shakespeare: $(OBJ_DIR)/shakespeare.o $(OBJ_DIR)/fonctionHachage.o $(OBJ_DIR)/listeChaine.o $(OBJ_DIR)/arbreRecherche.o $(OBJ_DIR)/clef128.o | $(BIN_DIR)
+	$(CC) $(CFLAGS) $^ -o $@ -lm
+
+$(BIN_DIR)/test_tempsConstruction: $(OBJ_DIR)/test_tempsConstruction.o $(OBJ_DIR)/fonctionHachage.o $(OBJ_DIR)/tasArbre.o $(OBJ_DIR)/tasTableau.o $(OBJ_DIR)/fileBinomiale.o $(OBJ_DIR)/clef128.o $(OBJ_DIR)/listeChaine.o | $(BIN_DIR)
+	$(CC) $(CFLAGS) $^ -o $@ -lm
+
+$(BIN_DIR)/test_tempsAjout: $(OBJ_DIR)/test_tempsAjout.o $(OBJ_DIR)/fonctionHachage.o $(OBJ_DIR)/tasArbre.o $(OBJ_DIR)/tasTableau.o $(OBJ_DIR)/fileBinomiale.o $(OBJ_DIR)/clef128.o $(OBJ_DIR)/listeChaine.o | $(BIN_DIR)
+	$(CC) $(CFLAGS) $^ -o $@ -lm
+
+$(BIN_DIR)/test_tempsSupp: $(OBJ_DIR)/test_tempsSupp.o $(OBJ_DIR)/fonctionHachage.o $(OBJ_DIR)/tasArbre.o $(OBJ_DIR)/tasTableau.o $(OBJ_DIR)/fileBinomiale.o $(OBJ_DIR)/clef128.o $(OBJ_DIR)/listeChaine.o | $(BIN_DIR)
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 
 # Création des répertoires si nécessaire

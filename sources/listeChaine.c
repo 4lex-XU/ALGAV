@@ -21,9 +21,9 @@ HashMap* findMap(HashMap* map, char* key)
 HashMap* insertMap(HashMap* map, char* key)
 {
     HashMap* tmp = (HashMap*)malloc(sizeof(HashMap));
-    tmp->key = (char*)malloc(sizeof(char));
+    tmp->key = (char*)malloc(sizeof(char)*32);
     strcpy(tmp->key, key);
-    tmp->value = 1;
+    tmp->suiv = NULL;
     if(map == NULL)
     {
         map = tmp;
@@ -38,12 +38,24 @@ HashMap* insertMap(HashMap* map, char* key)
     return map;
 }
 
+int sizeMap(HashMap* map)
+{
+    int len = 0;
+    HashMap* tmp = map;
+    while(tmp != NULL)
+    {
+        len++;
+        tmp = tmp->suiv;
+    }
+    return len;
+}
+
 void afficheMap(HashMap* map){
     if(map == NULL)
     {   
         return;
     }
-    printf("%s : %d\n", map->key, map->value);
+    printf("%s\n", map->key);
     afficheMap(map->suiv);
 }
 

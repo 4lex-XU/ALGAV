@@ -132,7 +132,7 @@ void ajoutTasArbre (TasArbre * tas, Clef128* clef)
     }
     // CLEF EXISTANT
     if(eg(tas->clef, clef)){
-        printf("La clef est déjà dans le tas\n");
+        //printf("La clef est déjà dans le tas\n");
         return;
     }
 

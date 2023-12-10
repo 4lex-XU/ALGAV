@@ -1,0 +1,9 @@
+set terminal png size 800,600
+set output 'resultats/graphiqueAjout.png'
+set title "Temps d'exécution"
+set xlabel "Nombre de Clefs"
+set ylabel "Temps (s)"
+set grid
+plot "resultats/resultats_temps_Ajout.txt" using 2:4 with linespoints title "TasTableau", \
+     "resultats/resultats_temps_Ajout.txt" using 2:6 with linespoints title "TasArbre", \
+     "resultats/resultats_temps_Ajout.txt" using 2:8 with linespoints title "FileBinomiale"

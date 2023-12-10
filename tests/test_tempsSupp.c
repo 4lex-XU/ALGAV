@@ -6,36 +6,44 @@
 #include "../headers/tasArbre.h"
 #include "../headers/fileBinomiale.h"
 #include "../headers/listeChaine.h"
+#include "../headers/fonctionHachage.h"
 #include <time.h>
 #include <math.h>
 
 #define MAX 1000
 
-double mesurerTempsConstructionTableau(Clef128 **clefs, int deb, int fi) {
+double mesurerTempsSuppTableau(TasTableau* t, int nb) {
     clock_t debut, fin;
     debut = clock();
-    TasTableau * t = constructionTasTableau(clefs, deb, fi);
+    for(int i = 0; i<nb; i++)
+    {
+        supprMinTasTableau(t);
+    }
     fin = clock();
-    deleteTasTableau(t);
     return (double)(fin - debut) / CLOCKS_PER_SEC;
 }
 
-double mesurerTempsConstructionTasArbre(Clef128 **clefs, int len)
+double mesurerTempsSuppTasArbre(TasArbre* t, int nb)
 {
     clock_t debut, fin;
     debut = clock();
-    TasArbre* t = constructionTasArbre(clefs, len);
+    for(int i = 0; i<nb; i++)
+    {
+        supprMinTasArbre(t,t);
+    }
     fin = clock();
-    deleteTasArbre(t);
     return (double)(fin - debut) / CLOCKS_PER_SEC;
 }
 
-double mesurerTempsConstructionFile(Clef128 **clefs, int deb, int fi) {
+double mesurerTempsSuppFile(FileBinomiale* F, int nb) 
+{
     clock_t debut, fin;
     debut = clock();
-    FileBinomiale * F = Construction(clefs, deb, fi);
+    for(int i = 0; i < nb; i++)
+    {
+        SupprMin(F);
+    }
     fin = clock();
-    deleteFileBinomiale(F);
     return (double)(fin - debut) / CLOCKS_PER_SEC;
 }
 
@@ -43,7 +51,7 @@ int main()
 {
     FILE * file = NULL;
     FILE * fichier = NULL;
-    if ((fichier = fopen("./resultats/resultats_temps_TasMin_File_Construction.txt", "w")) == NULL) {
+    if ((fichier = fopen("./resultats/resultats_temps_Suppression.txt", "w")) == NULL) {
         printf("Error: not open\n");
         return 0;
     }
@@ -72,7 +80,7 @@ int main()
         "./Shakespeare/merchant.txt",
         "./Shakespeare/merry_wives.txt",
         "./Shakespeare/midsummer.txt",
-        "./Shakespeare/much_ado",
+        "./Shakespeare/much_ado.txt",
         "./Shakespeare/othello.txt",
         "./Shakespeare/pericles.txt",
         "./Shakespeare/richardii.txt",
@@ -90,7 +98,7 @@ int main()
 
     char buffer[MAX];
     HashMap* map = NULL;
-    HashMap* tmp;
+    HashMap* tmp = NULL;
 
     for(int i = 0; i<37; i++)
     {   
@@ -111,15 +119,53 @@ int main()
                 tmp->value++;
             }
         }
+        fclose(file);
     }
 
-    afficheMap(map);
+    int SIZEMAP = sizeMap(map);
+    //printf("sizeMap = %d\n", SIZEMAP); // 23086
 
-    /*
-    double tempsMoyenConstructionTableau = 0;
-    double tempsMoyenConstructionArbre = 0;
-    double tempsMoyenConstructionFile = 0;
-    */
-   
+    double tempsMoyenSuppTableau = 0;
+    double tempsMoyenSuppArbre = 0;
+    double tempsMoyenSuppFile = 0;
+
+    Clef128* clefs[SIZEMAP];
+    int i = 0;
+    tmp = map;
+    while(tmp != NULL)
+    {
+        unsigned int* md5 = MD5(tmp->key);
+        Clef128* clef = (Clef128*)malloc(sizeof(Clef128));
+        clef->clef_hexa = (char*)malloc(sizeof(char)*32);
+        clef->b32_1 = md5[3];
+        clef->b32_2 = md5[2];
+        clef->b32_3 = md5[1];
+        clef->b32_4 = md5[0];
+        strcpy(clef->clef_hexa, tmp->key);
+        clefs[i] = clef;
+        i++;
+        tmp = tmp->suiv;
+    }
+
+    for(int i = 1; i<20; i++)
+    {
+        TasTableau* t1 = constructionTasTableau(clefs, 0, SIZEMAP);
+        TasArbre* t2 = constructionTasArbre(clefs, SIZEMAP);
+        FileBinomiale* f1 = Construction(clefs, 0, SIZEMAP);
+
+        tempsMoyenSuppTableau += mesurerTempsSuppTableau(t1, i);
+        tempsMoyenSuppArbre += mesurerTempsSuppTasArbre(t2, i);
+        tempsMoyenSuppFile += mesurerTempsSuppFile(f1, i);
+
+        deleteTasTableau(t1);
+        deleteTasArbre(t2);
+        deleteFileBinomiale(f1);
+
+        fprintf(fichier, "Nombre_de_clefs: %d, TasTableau: %f, TasArbre: %f, FileBinomiale: %f\n", i, tempsMoyenSuppTableau, tempsMoyenSuppArbre, tempsMoyenSuppFile);
+    }
+
+    deleteMap(map);
+    fclose(fichier);
+
     return 0;
 }
