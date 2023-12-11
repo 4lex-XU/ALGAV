@@ -122,8 +122,6 @@ int main()
             if((tmp = findMap(map, buffer)) == NULL)
             {
                 map = insertMap(map, buffer);
-            }else{
-                tmp->value++;
             }
         }
         fclose(file);
