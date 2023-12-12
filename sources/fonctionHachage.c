@@ -42,20 +42,21 @@ unsigned int* MD5(char* chaine)
 
     //Preparation du message(padding) :
     int lenInit = strlen(chaine);
-    int len = lenInit*8;
-    int nbZero = (56-(len+8))%64;
-    int offset = (nbZero > 0) ? nbZero : 64+nbZero; //nombre de 0 à ajouter 
-    int lenFinal = lenInit+offset+4; //taille du message après preparation
-    unsigned char* msg = (unsigned char*)malloc(sizeof(unsigned char)*lenFinal);
-    memset(msg, 0, lenFinal);
+    int len = lenInit*8; // taille du mot en bits
+    int nbZero = (448-(len+1))%512;
+    int offset = (nbZero > 0) ? nbZero : 512-nbZero; //nombre bit à 0 à ajouter 
+    int lenFinal_bit = len+1+offset+64; //taille du message après preparation en bits
+    int bloc = lenFinal_bit/512; // nombre de bloc de 512 bits = 64 octets
+    int lenFinal_octet = 64*bloc;
+    unsigned char* msg = (unsigned char*)malloc(sizeof(unsigned char)*lenFinal_octet);
+    memset(msg, 0, lenFinal_octet);
     memcpy(msg, chaine, lenInit);
     msg[lenInit] = (unsigned char)0x80;
-    int indice = lenFinal-8;
+    int indice = lenFinal_octet-8;
     memcpy(msg+indice, &len, 4);
-    
+
     //Decoupage en blocs de 512 bits
     int bit = 0;
-    int bloc = lenFinal/64;
     unsigned int w[16]; //16 mots de 32 bits = 4o
     for(int b = 0; b<bloc; b++)
     {

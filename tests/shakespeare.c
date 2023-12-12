@@ -84,6 +84,8 @@ int main()
     }
 
     //afficheMap(map);
+    
+    // Q6.14
     int SIZEMAP = sizeMap(map);
     Clef128* clefs[SIZEMAP];
     int i = 0;
@@ -106,10 +108,12 @@ int main()
 
     // Q6.15
     HashMap* collision = NULL;
-    for(int i = 0; i<SIZEMAP; i++)
+    for(int i = 0; i<SIZEMAP-1; i++)
     {
         if(rechercher(arbre_rech, clefs[i]) == 0)
         {
+            printf("i = %d\n", i );
+            printf("----------------\n");
             collision = insertMap(collision, clefs[i]->clef_hexa);
             fprintf(fichier,"Clef = %s -> %u %u %u %u\n", 
                             clefs[i]->clef_hexa, clefs[i]->b32_4, clefs[i]->b32_3, clefs[i]->b32_2, clefs[i]->b32_1);
@@ -118,32 +122,11 @@ int main()
 
     //afficheMap(collision);
     int SIZECOL = sizeMap(collision);
-    printf("sizeMap = %d\n", SIZECOL);
+    printf("sizeCol = %d\n", SIZECOL); // 0 collision
     deleteMap(collision);
-
-    /*
-    HashMap* col1 = NULL;
-    for(int i = 0; i<SIZEMAP; i++)
-    {
-        col1 = insertMap(col1, clefs[i]->clef_hexa);
-        for(int j = 0; i<SIZEMAP; j++)
-        {
-            if(strcmp(clefs[i]->clef_hexa, clefs[j]->clef_hexa) == 0)
-            {
-                continue;
-            }
-            if(eg(clefs[i], clefs[j]) && (strcmp(clefs[i]->clef_hexa, clefs[j]->clef_hexa) != 0))
-            {
-                col1 = insertMap(col1, clefs[j]->clef_hexa);
-            }
-        }
-        afficheMap(col1);
-        deleteMap(col1);
-        printf("---------------\n");
-    }
-    */
-
     deleteMap(map);
+    deleteClefs(clefs, SIZEMAP);
+    fclose(fichier);
 
     return 0;
 }
