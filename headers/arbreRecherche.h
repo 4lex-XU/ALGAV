@@ -18,5 +18,6 @@ Noeud* rotationGauche(Noeud* x);
 int hauteur(Noeud* N);
 int getBalanceFactor(Noeud* N);
 Clef128* copy(Clef128* clef);
+void affichageArbre(Noeud* racine);
 
 #endif

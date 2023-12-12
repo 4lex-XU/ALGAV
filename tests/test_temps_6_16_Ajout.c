@@ -1,20 +1,64 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../headers/clef128.h"
+#include "../headers/tasTableau.h"
+#include "../headers/tasArbre.h"
+#include "../headers/fileBinomiale.h"
+#include "../headers/listeChaine.h"
+#include "../headers/fonctionHachage.h"
 #include <time.h>
 #include <math.h>
-#include "../headers/fonctionHachage.h"
-#include "../headers/arbreRecherche.h"
-#include "../headers/listeChaine.h"
 
 #define MAX 1000
-#define NBKEY 26588
+
+double mesurerTempsAjoutTableau(Clef128 **clefs, int nb) {
+    TasTableau* t = initTas(nb);
+    clock_t debut, fin;
+    debut = clock();
+    for(int i = 0; i<nb; i++)
+    {
+        ajoutTasTableau(t, *clefs[i]);
+    }
+    fin = clock();
+    deleteTasTableau(t);
+    return (double)(fin - debut) / CLOCKS_PER_SEC;
+}
+
+double mesurerTempsAjoutTasArbre(Clef128 **clefs, int nb)
+{
+    TasArbre* t = initialisation();
+    clock_t debut, fin;
+    debut = clock();
+    for(int i = 0; i<nb; i++)
+    {
+        ajoutTasArbre(t, clefs[i]);
+    }
+    fin = clock();
+    deleteTasArbre(t);
+    return (double)(fin - debut) / CLOCKS_PER_SEC;
+}
+
+double mesurerTempsAjoutFile(Clef128 **clefs, int nb) 
+{
+    FileBinomiale * F = NULL;
+    clock_t debut, fin;
+    debut = clock();
+    for(int i = 0; i < nb; i++)
+    {
+        TournoiBinomial * T = Tournoi(*clefs[i]);
+        F = AjoutMin(F, T);
+    }
+    fin = clock();
+    deleteFileBinomiale(F);
+    return (double)(fin - debut) / CLOCKS_PER_SEC;
+}
 
 int main()
 {
     FILE * file = NULL;
     FILE * fichier = NULL;
-    if ((fichier = fopen("./resultats/resultats_collisions.txt", "w")) == NULL) {
+    if ((fichier = fopen("./resultats/resultats_temps_6_16_Ajout.txt", "w")) == NULL) {
         printf("Error: not open\n");
         return 0;
     }
@@ -62,8 +106,7 @@ int main()
     char buffer[MAX];
     HashMap* map = NULL;
     HashMap* tmp = NULL;
-    Noeud* arbre_rech = NULL;
-    // LECTURE DES FICHIERS
+
     for(int i = 0; i<37; i++)
     {   
         if((file = fopen(jeux[i], "r")) == NULL)
@@ -72,9 +115,10 @@ int main()
             return 0;
         }
 
-        // LECTURE DES CLES DANS LE FICHIER + CREATION DE LA LISTE DE MOTS 
+        // LECTURE DES CLES DANS LE FICHIER
         while(fgets(buffer, MAX, file) != NULL)
         {
+            // LISTE DES MOTS DU DOSSIER 
             if((tmp = findMap(map, buffer)) == NULL)
             {
                 map = insertMap(map, buffer);
@@ -83,8 +127,13 @@ int main()
         fclose(file);
     }
 
-    //afficheMap(map);
     int SIZEMAP = sizeMap(map);
+    //printf("sizeMap = %d\n", SIZEMAP); // 23086
+
+    double tempsMoyenAjoutTableau = 0;
+    double tempsMoyenAjoutArbre = 0;
+    double tempsMoyenAjoutFile = 0;
+
     Clef128* clefs[SIZEMAP];
     int i = 0;
     tmp = map;
@@ -100,50 +149,20 @@ int main()
         strcpy(clef->clef_hexa, tmp->key);
         clefs[i] = clef;
         i++;
-        arbre_rech = inserer(arbre_rech, clef);
         tmp = tmp->suiv;
     }
 
-    // Q6.15
-    HashMap* collision = NULL;
-    for(int i = 0; i<SIZEMAP; i++)
+    for(int i = 1; i<SIZEMAP; i+=1000)
     {
-        if(rechercher(arbre_rech, clefs[i]) == 0)
-        {
-            collision = insertMap(collision, clefs[i]->clef_hexa);
-            fprintf(fichier,"Clef = %s -> %u %u %u %u\n", 
-                            clefs[i]->clef_hexa, clefs[i]->b32_4, clefs[i]->b32_3, clefs[i]->b32_2, clefs[i]->b32_1);
-        }
-    }
+        tempsMoyenAjoutTableau += mesurerTempsAjoutTableau(clefs, i);
+        tempsMoyenAjoutArbre += mesurerTempsAjoutTasArbre(clefs, i);
+        tempsMoyenAjoutFile += mesurerTempsAjoutFile(clefs, i);
 
-    //afficheMap(collision);
-    int SIZECOL = sizeMap(collision);
-    printf("sizeMap = %d\n", SIZECOL);
-    deleteMap(collision);
-
-    /*
-    HashMap* col1 = NULL;
-    for(int i = 0; i<SIZEMAP; i++)
-    {
-        col1 = insertMap(col1, clefs[i]->clef_hexa);
-        for(int j = 0; i<SIZEMAP; j++)
-        {
-            if(strcmp(clefs[i]->clef_hexa, clefs[j]->clef_hexa) == 0)
-            {
-                continue;
-            }
-            if(eg(clefs[i], clefs[j]) && (strcmp(clefs[i]->clef_hexa, clefs[j]->clef_hexa) != 0))
-            {
-                col1 = insertMap(col1, clefs[j]->clef_hexa);
-            }
-        }
-        afficheMap(col1);
-        deleteMap(col1);
-        printf("---------------\n");
+        fprintf(fichier, "Nombre_de_clefs: %d, TasTableau: %f, TasArbre: %f, FileBinomiale: %f\n", i, tempsMoyenAjoutTableau, tempsMoyenAjoutArbre, tempsMoyenAjoutFile);
     }
-    */
 
     deleteMap(map);
+    fclose(fichier);
 
     return 0;
 }

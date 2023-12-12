@@ -41,7 +41,7 @@ double mesurerTempsSuppFile(FileBinomiale* F, int nb)
     debut = clock();
     for(int i = 0; i < nb; i++)
     {
-        SupprMin(F);
+        F = SupprMin(F);
     }
     fin = clock();
     return (double)(fin - debut) / CLOCKS_PER_SEC;
@@ -51,7 +51,7 @@ int main()
 {
     FILE * file = NULL;
     FILE * fichier = NULL;
-    if ((fichier = fopen("./resultats/resultats_temps_Suppression.txt", "w")) == NULL) {
+    if ((fichier = fopen("./resultats/resultats_temps_6_16_Suppression.txt", "w")) == NULL) {
         printf("Error: not open\n");
         return 0;
     }
@@ -115,8 +115,6 @@ int main()
             if((tmp = findMap(map, buffer)) == NULL)
             {
                 map = insertMap(map, buffer);
-            }else{
-                tmp->value++;
             }
         }
         fclose(file);
@@ -156,10 +154,10 @@ int main()
         tempsMoyenSuppTableau += mesurerTempsSuppTableau(t1, i);
         tempsMoyenSuppArbre += mesurerTempsSuppTasArbre(t2, i);
         tempsMoyenSuppFile += mesurerTempsSuppFile(f1, i);
-
+        //printf("i = %d\n", i);
         deleteTasTableau(t1);
         deleteTasArbre(t2);
-        deleteFileBinomiale(f1);
+        //deleteFileBinomiale(f1);
 
         fprintf(fichier, "Nombre_de_clefs: %d, TasTableau: %f, TasArbre: %f, FileBinomiale: %f\n", i, tempsMoyenSuppTableau, tempsMoyenSuppArbre, tempsMoyenSuppFile);
     }

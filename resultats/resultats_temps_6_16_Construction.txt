@@ -1,0 +1,1 @@
+Taille: 23086, TasTableau: 0.001634, TasArbre: 0.006900, FileBinomiale: 0.010018

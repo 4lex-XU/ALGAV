@@ -121,3 +121,11 @@ int getBalanceFactor(Noeud * N) {
         return 0;
     return hauteur(N->gauche) - hauteur(N->droite);
 }
+
+void affichageArbre(Noeud* racine) {
+    if (racine != NULL) {
+        affichageArbre(racine->gauche);
+        affichageClef(racine->clef);
+        affichageArbre(racine->droite);
+    }
+}

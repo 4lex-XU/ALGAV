@@ -12,43 +12,29 @@
 
 #define MAX 1000
 
-double mesurerTempsAjoutTableau(Clef128 **clefs, int nb) {
-    TasTableau* t = initTas(nb);
+double mesurerTempsConstructionTableau(Clef128 **clefs, int deb, int fi) {
     clock_t debut, fin;
     debut = clock();
-    for(int i = 0; i<nb; i++)
-    {
-        ajoutTasTableau(t, *clefs[i]);
-    }
+    TasTableau * t = constructionTasTableau(clefs, deb, fi);
     fin = clock();
     deleteTasTableau(t);
     return (double)(fin - debut) / CLOCKS_PER_SEC;
 }
 
-double mesurerTempsAjoutTasArbre(Clef128 **clefs, int nb)
+double mesurerTempsConstructionTasArbre(Clef128 **clefs, int len)
 {
-    TasArbre* t = initialisation();
     clock_t debut, fin;
     debut = clock();
-    for(int i = 0; i<nb; i++)
-    {
-        ajoutTasArbre(t, clefs[i]);
-    }
+    TasArbre* t = constructionTasArbre(clefs, len);
     fin = clock();
     deleteTasArbre(t);
     return (double)(fin - debut) / CLOCKS_PER_SEC;
 }
 
-double mesurerTempsAjoutFile(Clef128 **clefs, int nb) 
-{
-    FileBinomiale * F = NULL;
+double mesurerTempsConstructionFile(Clef128 **clefs, int deb, int fi) {
     clock_t debut, fin;
     debut = clock();
-    for(int i = 0; i < nb; i++)
-    {
-        TournoiBinomial * T = Tournoi(*clefs[i]);
-        F = AjoutMin(F, T);
-    }
+    FileBinomiale * F = Construction(clefs, deb, fi);
     fin = clock();
     deleteFileBinomiale(F);
     return (double)(fin - debut) / CLOCKS_PER_SEC;
@@ -58,7 +44,7 @@ int main()
 {
     FILE * file = NULL;
     FILE * fichier = NULL;
-    if ((fichier = fopen("./resultats/resultats_temps_Ajout.txt", "w")) == NULL) {
+    if ((fichier = fopen("./resultats/resultats_temps_6_16_Construction.txt", "w")) == NULL) {
         printf("Error: not open\n");
         return 0;
     }
@@ -107,6 +93,7 @@ int main()
     HashMap* map = NULL;
     HashMap* tmp = NULL;
 
+    // LECTURE DES FICHIERS
     for(int i = 0; i<37; i++)
     {   
         if((file = fopen(jeux[i], "r")) == NULL)
@@ -122,23 +109,22 @@ int main()
             if((tmp = findMap(map, buffer)) == NULL)
             {
                 map = insertMap(map, buffer);
-            }else{
-                tmp->value++;
             }
         }
         fclose(file);
     }
 
     int SIZEMAP = sizeMap(map);
-    //printf("sizeMap = %d\n", SIZEMAP); // 23086
+    printf("sizeMap = %d\n", SIZEMAP);
 
-    double tempsMoyenAjoutTableau = 0;
-    double tempsMoyenAjoutArbre = 0;
-    double tempsMoyenAjoutFile = 0;
+    double tempsMoyenConstructionTableau = 0;
+    double tempsMoyenConstructionArbre = 0;
+    double tempsMoyenConstructionFile = 0;
 
     Clef128* clefs[SIZEMAP];
     int i = 0;
     tmp = map;
+    // CREATION DU TABLEAU DE CLEFS
     while(tmp != NULL)
     {
         unsigned int* md5 = MD5(tmp->key);
@@ -154,14 +140,11 @@ int main()
         tmp = tmp->suiv;
     }
 
-    for(int i = 1; i<SIZEMAP; i+=1000)
-    {
-        tempsMoyenAjoutTableau += mesurerTempsAjoutTableau(clefs, i);
-        tempsMoyenAjoutArbre += mesurerTempsAjoutTasArbre(clefs, i);
-        tempsMoyenAjoutFile += mesurerTempsAjoutFile(clefs, i);
+    tempsMoyenConstructionTableau = mesurerTempsConstructionTableau(clefs, 0, SIZEMAP);
+    tempsMoyenConstructionArbre = mesurerTempsConstructionTasArbre(clefs, SIZEMAP);
+    tempsMoyenConstructionFile = mesurerTempsConstructionFile(clefs, 0, SIZEMAP);
 
-        fprintf(fichier, "Nombre_de_clefs: %d, TasTableau: %f, TasArbre: %f, FileBinomiale: %f\n", i, tempsMoyenAjoutTableau, tempsMoyenAjoutArbre, tempsMoyenAjoutFile);
-    }
+    fprintf(fichier, "Taille: %d, TasTableau: %f, TasArbre: %f, FileBinomiale: %f\n", SIZEMAP, tempsMoyenConstructionTableau, tempsMoyenConstructionArbre, tempsMoyenConstructionFile);
 
     deleteMap(map);
     fclose(fichier);

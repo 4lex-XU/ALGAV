@@ -12,29 +12,29 @@
 
 #define MAX 1000
 
-double mesurerTempsConstructionTableau(Clef128 **clefs, int deb, int fi) {
+double mesurerTempsUnionTableau(TasTableau* t1, TasTableau* t2) {
     clock_t debut, fin;
     debut = clock();
-    TasTableau * t = constructionTasTableau(clefs, deb, fi);
+    TasTableau * t = UnionTasTableau(t1, t2);
     fin = clock();
     deleteTasTableau(t);
     return (double)(fin - debut) / CLOCKS_PER_SEC;
 }
 
-double mesurerTempsConstructionTasArbre(Clef128 **clefs, int len)
+double mesurerTempsUnionTasArbre(TasArbre * t1, TasArbre * t2)
 {
     clock_t debut, fin;
     debut = clock();
-    TasArbre* t = constructionTasArbre(clefs, len);
+    TasArbre* t = UnionTasArbre(t1, t2);
     fin = clock();
     deleteTasArbre(t);
     return (double)(fin - debut) / CLOCKS_PER_SEC;
 }
 
-double mesurerTempsConstructionFile(Clef128 **clefs, int deb, int fi) {
+double mesurerTempsUnionFile(FileBinomiale* F1, FileBinomiale* F2) {
     clock_t debut, fin;
     debut = clock();
-    FileBinomiale * F = Construction(clefs, deb, fi);
+    FileBinomiale * F = Union(F1, F2);
     fin = clock();
     deleteFileBinomiale(F);
     return (double)(fin - debut) / CLOCKS_PER_SEC;
@@ -44,7 +44,7 @@ int main()
 {
     FILE * file = NULL;
     FILE * fichier = NULL;
-    if ((fichier = fopen("./resultats/resultats_temps_Construction.txt", "w")) == NULL) {
+    if ((fichier = fopen("./resultats/resultats_temps_6_16_Union.txt", "w")) == NULL) {
         printf("Error: not open\n");
         return 0;
     }
@@ -114,11 +114,11 @@ int main()
     }
 
     int SIZEMAP = sizeMap(map);
-    printf("sizeMap = %d\n", SIZEMAP);
+    //printf("sizeMap = %d\n", SIZEMAP); // 23086
 
-    double tempsMoyenConstructionTableau = 0;
-    double tempsMoyenConstructionArbre = 0;
-    double tempsMoyenConstructionFile = 0;
+    double tempsMoyenUnionTableau = 0;
+    double tempsMoyenUnionArbre = 0;
+    double tempsMoyenUnionFile = 0;
 
     Clef128* clefs[SIZEMAP];
     int i = 0;
@@ -138,11 +138,21 @@ int main()
         tmp = tmp->suiv;
     }
 
-    tempsMoyenConstructionTableau = mesurerTempsConstructionTableau(clefs, 0, SIZEMAP);
-    tempsMoyenConstructionArbre = mesurerTempsConstructionTasArbre(clefs, SIZEMAP);
-    tempsMoyenConstructionFile = mesurerTempsConstructionFile(clefs, 0, SIZEMAP);
+    for(int i = 1, j = 2; i<SIZEMAP && j<SIZEMAP; i += 1000, j += 2000)
+    {
+        TasTableau * t1 = constructionTasTableau(clefs, 0, i);
+        TasTableau * t2 = constructionTasTableau(clefs, 0, j);
+        TasArbre * t3 = constructionTasArbre(clefs, i);
+        TasArbre * t4 = constructionTasArbre(clefs, j);
+        FileBinomiale * f1 = Construction(clefs, 0, i);
+        FileBinomiale * f2 = Construction(clefs, 0, j);
+        //printf("i = %d, j = %d\n", i, j);
+        tempsMoyenUnionTableau = mesurerTempsUnionTableau(t1, t2);
+        tempsMoyenUnionArbre = mesurerTempsUnionTasArbre(t3, t4);
+        tempsMoyenUnionFile = mesurerTempsUnionFile(f1, f2);
 
-    fprintf(fichier, "Taille: %d, TasTableau: %f, TasArbre: %f, FileBinomiale: %f\n", SIZEMAP, tempsMoyenConstructionTableau, tempsMoyenConstructionArbre, tempsMoyenConstructionFile);
+        fprintf(fichier, "%d/%d; %f; %f; %f\n", i, j, tempsMoyenUnionTableau, tempsMoyenUnionArbre, tempsMoyenUnionFile);
+    }
 
     deleteMap(map);
     fclose(fichier);
