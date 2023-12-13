@@ -12,11 +12,11 @@ struct tasTableau {
 TasTableau * initTas(int capacite);
 void echanger (Clef128 * a, Clef128 * b);
 void reequilibrerTas (TasTableau * tas, int i);
-Clef128 supprMin (TasTableau * tas);
-void ajout (TasTableau * tas, Clef128 clef);
-TasTableau * ajoutsIteratifs (Clef128* clefs[], int deb, int fin);
-TasTableau * construction (Clef128* clefs[], int deb, int fin);
+Clef128 supprMinTasTableau (TasTableau * tas);
+void ajoutTasTableau (TasTableau * tas, Clef128 clef);
+TasTableau * ajoutsIteratifsTasTableau (Clef128* clefs[], int deb, int fin);
+TasTableau * constructionTasTableau (Clef128* clefs[], int deb, int fin);
 void affichageTasTableau(TasTableau* tas);
-TasTableau * Union(TasTableau * tas1, TasTableau * tas2);
-void delete(TasTableau * tas);
+TasTableau * UnionTasTableau(TasTableau * tas1, TasTableau * tas2);
+void deleteTasTableau(TasTableau * tas);
 #endif

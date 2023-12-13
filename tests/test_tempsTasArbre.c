@@ -12,9 +12,9 @@ double mesurerTempsAjoutsIteratifs(Clef128 **clefs, int len)
 {
     clock_t debut, fin;
     debut = clock();
-    TasArbre* t = ajoutsIteratifs(clefs, len);
+    TasArbre* t = ajoutsIteratifsTasArbre(clefs, len);
     fin = clock();
-    delete(t);
+    deleteTasArbre(t);
     return (double)(fin - debut) / CLOCKS_PER_SEC;
 }
 
@@ -22,9 +22,9 @@ double mesurerTempsConstruction(Clef128 **clefs, int len)
 {
     clock_t debut, fin;
     debut = clock();
-    TasArbre* t = construction(clefs, len);
+    TasArbre* t = constructionTasArbre(clefs, len);
     fin = clock();
-    delete(t);
+    deleteTasArbre(t);
     return (double)(fin - debut) / CLOCKS_PER_SEC;
 }
 

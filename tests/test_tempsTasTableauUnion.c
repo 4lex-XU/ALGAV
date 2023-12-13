@@ -12,9 +12,9 @@ double mesurerTempsUnion(TasTableau* tas1, TasTableau* tas2)
 {
     clock_t debut, fin;
     debut = clock();
-    TasTableau* tasUnion = Union(tas1, tas2);
+    TasTableau* tasUnion = UnionTasTableau(tas1, tas2);
     fin = clock();
-    delete(tasUnion);
+    deleteTasTableau(tasUnion);
     return (double)(fin - debut) / CLOCKS_PER_SEC;
 }
 
@@ -91,8 +91,8 @@ int main()
             j++;
         }
     
-        TasTableau* tas1 = construction(clefs, 0, taille);
-        TasTableau* tas2 = construction(clefs2, 0, taille);
+        TasTableau* tas1 = constructionTasTableau(clefs, 0, taille);
+        TasTableau* tas2 = constructionTasTableau(clefs2, 0, taille);
         double tempsUnion = mesurerTempsUnion(tas1, tas2);
 
         fprintf(fichier, "Taille: %d, Union: %f\n", taille, tempsUnion);   
@@ -100,8 +100,8 @@ int main()
         // Libérer la mémoire
         deleteClefs(clefs, taille);
         deleteClefs(clefs2, taille);
-        delete(tas1);
-        delete(tas2);
+        deleteTasTableau(tas1);
+        deleteTasTableau(tas2);
         fclose(file);
     }
 }
