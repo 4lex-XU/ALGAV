@@ -1,9 +1,16 @@
-set terminal png size 800,600
+set datafile separator ";"
+set terminal pngcairo enhanced font "arial,10" size 800,600
 set output 'resultats/graphique_6.16_Construction.png'
 set title "Temps d'exécution Construction des Tas et FileBinomiale"
-set xlabel "Taille"
-set ylabel "Temps (s)"
-set grid
-plot "resultats/resultats_temps_6_16_Construction.txt" using 2:4 with linespoints title "TasTableau", \
-     "resultats/resultats_temps_6_16_Construction.txt" using 2:6 with linespoints title "TasArbre", \
-     "resultats/resultats_temps_6_16_Construction.txt" using 2:8 with linespoints title "FileBinomiale"
+
+# Espacement entre les barres
+set boxwidth 0.5
+
+# Remplissage des barres avec une couleur
+set style fill solid
+
+# Charger les données depuis le fichier
+plot "resultats/resultats_temps_6_16_Construction.txt" using 2:xtic(1) with boxes lc rgb "royalblue" notitle
+set xlabel "Structure"
+set ylabel "Temps d'exécution (secondes)"
+set xtics rotate by -45

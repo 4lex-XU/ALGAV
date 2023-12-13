@@ -144,7 +144,7 @@ int main()
     tempsMoyenConstructionArbre = mesurerTempsConstructionTasArbre(clefs, SIZEMAP);
     tempsMoyenConstructionFile = mesurerTempsConstructionFile(clefs, 0, SIZEMAP);
 
-    fprintf(fichier, "Taille: %d, TasTableau: %f, TasArbre: %f, FileBinomiale: %f\n", SIZEMAP, tempsMoyenConstructionTableau, tempsMoyenConstructionArbre, tempsMoyenConstructionFile);
+    fprintf(fichier, "Tas Tableau; %f\nTas Arbre; %f\nFile binomiale; %f\n", tempsMoyenConstructionTableau, tempsMoyenConstructionArbre, tempsMoyenConstructionFile);
 
     deleteMap(map);
     fclose(fichier);
