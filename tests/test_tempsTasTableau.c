@@ -36,9 +36,9 @@ int main(){
     }
 
     // TESTS DE TEMPS
-    int tailles[] = {1000, 5000, 10000, 20000, 50000, 80000, 120000, 200000};
+    int tailles[] = {1000, 5000, 10000, 20000, 50000, 80000, 120000, 200000, 400000, 800000};
     int nbTailles = sizeof(tailles) / sizeof(tailles[0]);
-    char * jeux[40] = 
+    char * jeux[50] = 
     {   "./cles_alea/jeu_1_nb_cles_1000.txt",
         "./cles_alea/jeu_2_nb_cles_1000.txt",
         "./cles_alea/jeu_3_nb_cles_1000.txt",
@@ -85,7 +85,19 @@ int main(){
         "./cles_alea/jeu_2_nb_cles_200000.txt",
         "./cles_alea/jeu_3_nb_cles_200000.txt",
         "./cles_alea/jeu_4_nb_cles_200000.txt",
-        "./cles_alea/jeu_5_nb_cles_200000.txt"
+        "./cles_alea/jeu_5_nb_cles_200000.txt",
+
+        "./cles_alea/jeu_1_nb_cles_400000.txt",
+        "./cles_alea/jeu_2_nb_cles_400000.txt",
+        "./cles_alea/jeu_3_nb_cles_400000.txt",
+        "./cles_alea/jeu_4_nb_cles_400000.txt",
+        "./cles_alea/jeu_5_nb_cles_400000.txt",
+
+        "./cles_alea/jeu_1_nb_cles_800000.txt",
+        "./cles_alea/jeu_2_nb_cles_800000.txt",
+        "./cles_alea/jeu_3_nb_cles_800000.txt",
+        "./cles_alea/jeu_4_nb_cles_800000.txt",
+        "./cles_alea/jeu_5_nb_cles_800000.txt"
     };
 
     double tempsMoyenConstruction = 0;
