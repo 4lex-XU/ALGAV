@@ -97,8 +97,8 @@ int main()
     };
 
     char buffer[MAX];
-    HashMap* map = NULL;
-    HashMap* tmp = NULL;
+    ListeChainee* map = NULL;
+    ListeChainee* tmp = NULL;
 
     for(int i = 0; i<37; i++)
     {   
@@ -114,7 +114,15 @@ int main()
             // LISTE DES MOTS DU DOSSIER 
             if((tmp = findMap(map, buffer)) == NULL)
             {
-                map = insertMap(map, buffer);
+                unsigned int* md5 = MD5(buffer);
+                Clef128* clef = (Clef128*)malloc(sizeof(Clef128));
+                clef->clef_hexa = (char*)malloc(sizeof(char)*32);
+                clef->b32_1 = md5[3];
+                clef->b32_2 = md5[2];
+                clef->b32_3 = md5[1];
+                clef->b32_4 = md5[0];
+                strcpy(clef->clef_hexa, buffer);
+                map = insertMap(map, clef);
             }
         }
         fclose(file);
@@ -132,15 +140,7 @@ int main()
     tmp = map;
     while(tmp != NULL)
     {
-        unsigned int* md5 = MD5(tmp->key);
-        Clef128* clef = (Clef128*)malloc(sizeof(Clef128));
-        clef->clef_hexa = (char*)malloc(sizeof(char)*32);
-        clef->b32_1 = md5[3];
-        clef->b32_2 = md5[2];
-        clef->b32_3 = md5[1];
-        clef->b32_4 = md5[0];
-        strcpy(clef->clef_hexa, tmp->key);
-        clefs[i] = clef;
+        clefs[i] = tmp->clef;
         i++;
         tmp = tmp->suiv;
     }

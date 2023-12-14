@@ -3,12 +3,13 @@
 #include <math.h>
 #include <string.h>
 #include "../headers/listeChaine.h"
+#include "../headers/clef128.h"
 
-HashMap* findMap(HashMap* map, char* key)
+ListeChainee* findMap(ListeChainee* map, char* key)
 {
     while(map != NULL)
     {
-        if(strcmp(map->key, key) == 0)
+        if(strcmp(map->clef->clef_hexa, key) == 0)
         {
             return map;
         }
@@ -18,18 +19,17 @@ HashMap* findMap(HashMap* map, char* key)
     return NULL;
 }
 
-HashMap* insertMap(HashMap* map, char* key)
+ListeChainee* insertMap(ListeChainee* map, Clef128* clef)
 {
-    HashMap* tmp = (HashMap*)malloc(sizeof(HashMap));
-    tmp->key = (char*)malloc(sizeof(char)*32);
-    strcpy(tmp->key, key);
+    ListeChainee* tmp = (ListeChainee*)malloc(sizeof(ListeChainee));
+    tmp->clef = clef;
     tmp->suiv = NULL;
     if(map == NULL)
     {
         map = tmp;
         return map;
     }
-    HashMap* map2 = map;
+    ListeChainee* map2 = map;
     while(map2->suiv != NULL)
     {
         map2 = map2->suiv;
@@ -38,10 +38,10 @@ HashMap* insertMap(HashMap* map, char* key)
     return map;
 }
 
-int sizeMap(HashMap* map)
+int sizeMap(ListeChainee* map)
 {
     int len = 0;
-    HashMap* tmp = map;
+    ListeChainee* tmp = map;
     while(tmp != NULL)
     {
         len++;
@@ -50,21 +50,22 @@ int sizeMap(HashMap* map)
     return len;
 }
 
-void afficheMap(HashMap* map){
+void afficheMap(ListeChainee* map){
     if(map == NULL)
     {   
         return;
     }
-    printf("%s\n", map->key);
+    affichageClef(map->clef);
     afficheMap(map->suiv);
 }
 
-void deleteMap(HashMap* map)
+void deleteMap(ListeChainee* map)
 {
     while(map != NULL)
     {
-        HashMap* suiv = map->suiv;
-        free(map->key);
+        ListeChainee* suiv = map->suiv;
+        free(map->clef->clef_hexa);
+        free(map->clef);
         free(map);
         map = suiv;
     }
