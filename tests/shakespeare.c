@@ -60,8 +60,8 @@ int main()
     };
 
     char buffer[MAX];
-    HashMap* map = NULL;
-    HashMap* tmp = NULL;
+    ListeChainee* map = NULL;
+    ListeChainee* tmp = NULL;
     Noeud* arbre_rech = NULL;
     // LECTURE DES FICHIERS
     for(int i = 0; i<37; i++)
@@ -77,7 +77,15 @@ int main()
         {
             if((tmp = findMap(map, buffer)) == NULL)
             {
-                map = insertMap(map, buffer);
+                unsigned int* md5 = MD5(buffer);
+                Clef128* clef = (Clef128*)malloc(sizeof(Clef128));
+                clef->clef_hexa = (char*)malloc(sizeof(char)*32);
+                clef->b32_1 = md5[3];
+                clef->b32_2 = md5[2];
+                clef->b32_3 = md5[1];
+                clef->b32_4 = md5[0];
+                strcpy(clef->clef_hexa, buffer);
+                map = insertMap(map, clef);
             }
         }
         fclose(file);
@@ -92,29 +100,21 @@ int main()
     tmp = map;
     while(tmp != NULL)
     {
-        unsigned int* md5 = MD5(tmp->key);
-        Clef128* clef = (Clef128*)malloc(sizeof(Clef128));
-        clef->clef_hexa = (char*)malloc(sizeof(char)*32);
-        clef->b32_1 = md5[3];
-        clef->b32_2 = md5[2];
-        clef->b32_3 = md5[1];
-        clef->b32_4 = md5[0];
-        strcpy(clef->clef_hexa, tmp->key);
-        clefs[i] = clef;
+        clefs[i] = tmp->clef;
+        arbre_rech = inserer(arbre_rech, clefs[i]);
         i++;
-        arbre_rech = inserer(arbre_rech, clef);
         tmp = tmp->suiv;
     }
 
     // Q6.15
-    HashMap* collision = NULL;
+    ListeChainee* collision = NULL;
     for(int i = 0; i<SIZEMAP-1; i++)
     {
         if(rechercher(arbre_rech, clefs[i]) == 0)
         {
             printf("i = %d\n", i );
             printf("----------------\n");
-            collision = insertMap(collision, clefs[i]->clef_hexa);
+            collision = insertMap(collision, clefs[i]);
             fprintf(fichier,"Clef = %s -> %u %u %u %u\n", 
                             clefs[i]->clef_hexa, clefs[i]->b32_4, clefs[i]->b32_3, clefs[i]->b32_2, clefs[i]->b32_1);
         }
@@ -125,7 +125,6 @@ int main()
     printf("sizeCol = %d\n", SIZECOL); // 0 collision
     deleteMap(collision);
     deleteMap(map);
-    deleteClefs(clefs, SIZEMAP);
     fclose(fichier);
 
     return 0;
