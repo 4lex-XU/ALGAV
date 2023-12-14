@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../headers/tasArbre.h"
+#include "../headers/listeChaine.h"
 #include <math.h>
 #include <string.h>
 
@@ -361,106 +362,32 @@ TasArbre* constructionTasArbre(Clef128* clefs[], int len)
     return tas;
 }
 
+void UnionParcours(ListeChainee** liste, TasArbre* tas)
+{
+    if(tas == NULL){
+        return;
+    }
+    *liste = insertMap(*liste, copy(tas->clef));
+    UnionParcours(liste, tas->fg);
+    UnionParcours(liste, tas->fd);
+}
+
 TasArbre* UnionTasArbre(TasArbre* tas1, TasArbre* tas2)
 {
-    Liste* newliste = (Liste*)malloc(sizeof(Liste));
-    TasArbre* premier = creerNoeud(tas1->clef);
-    newliste->tete = ajoutListe(premier);
-    newliste->queue = newliste->tete;
-    TasArbre* tasFinal = newliste->tete->noeud;
-
-    Liste* tasAcopie = (Liste*)malloc(sizeof(Liste));
-    tasAcopie->tete = ajoutListe(tas1);
-    tasAcopie->queue = tasAcopie->tete;
-    Element* supp1 = newliste->tete;
-    Element* supp2 = tasAcopie->tete;
-    Element* reequilibrage = newliste->tete;
-    int len = 1; // nombre de noeud;
-    while(tasAcopie->tete != NULL)
+    ListeChainee* liste = NULL;
+    UnionParcours(&liste, tas1);
+    UnionParcours(&liste, tas2);
+    int taille = sizeMap(liste);
+    Clef128* clefs[taille];
+    ListeChainee* tmp = liste;
+    int i = 0;
+    while(tmp != NULL)
     {
-        if(tasAcopie->tete->noeud->fg)
-        {
-            tasAcopie->queue->suiv = ajoutListe(tasAcopie->tete->noeud->fg);
-            tasAcopie->queue = tasAcopie->queue->suiv;
-        }
-        if(tasAcopie->tete->noeud->fd)
-        {
-            tasAcopie->queue->suiv = ajoutListe(tasAcopie->tete->noeud->fd);
-            tasAcopie->queue = tasAcopie->queue->suiv;
-        }
-
-        tasAcopie->tete = tasAcopie->tete->suiv;
-        if(tasAcopie->tete == NULL)
-        {
-            break;
-        }
-
-        if(newliste->tete->noeud->fg == NULL)
-        {
-            len++;
-            newliste->tete->noeud->fg = creerNoeud(tasAcopie->tete->noeud->clef);
-            newliste->queue->suiv = ajoutListe(newliste->tete->noeud->fg);
-            newliste->queue->suiv->pre = newliste->queue;
-            newliste->queue = newliste->queue->suiv;
-        }else{
-            if(newliste->tete->noeud->fd == NULL)
-            {
-                len++;
-                newliste->tete->noeud->fd = creerNoeud(tasAcopie->tete->noeud->clef);
-                newliste->queue->suiv = ajoutListe(newliste->tete->noeud->fd);
-                newliste->queue->suiv->pre = newliste->queue;
-                newliste->queue = newliste->queue->suiv;
-                newliste->tete = newliste->tete->suiv;
-            }
-        }
+        clefs[i] = tmp->clef;
+        i++;
+        tmp = tmp->suiv;
     }
-
-    Liste* tasAcopie2 = (Liste*)malloc(sizeof(Liste));
-    tasAcopie2->tete = ajoutListe(tas2);
-    tasAcopie2->queue = tasAcopie2->tete;
-    Element* supp3 = tasAcopie2->tete;
-    while(tasAcopie2->tete != NULL)
-    {
-        if(tasAcopie2->tete->noeud->fg)
-        {     
-            tasAcopie2->queue->suiv = ajoutListe(tasAcopie2->tete->noeud->fg);
-            tasAcopie2->queue = tasAcopie2->queue->suiv;
-        }
-        if(tasAcopie2->tete->noeud->fd)
-        {
-            tasAcopie2->queue->suiv = ajoutListe(tasAcopie2->tete->noeud->fd);
-            tasAcopie2->queue = tasAcopie2->queue->suiv;
-        }
-    
-        if(newliste->tete->noeud->fg == NULL)
-        {
-            len++;
-            newliste->tete->noeud->fg = creerNoeud(tasAcopie2->tete->noeud->clef);
-            newliste->queue->suiv = ajoutListe(newliste->tete->noeud->fg);
-            newliste->queue->suiv->pre = newliste->queue;
-            newliste->queue = newliste->queue->suiv;
-
-        }else{
-            if(newliste->tete->noeud->fd == NULL)
-            {
-                len++;
-                newliste->tete->noeud->fd = creerNoeud(tasAcopie2->tete->noeud->clef);
-                newliste->queue->suiv = ajoutListe(newliste->tete->noeud->fd);
-                newliste->queue->suiv->pre = newliste->queue;
-                newliste->queue = newliste->queue->suiv;
-                newliste->tete = newliste->tete->suiv;
-            }
-        }
-        tasAcopie2->tete = tasAcopie2->tete->suiv;
-    }
-    reequilibrageDescente(reequilibrage, len);
-    deleteElement(supp1);
-    deleteElement(supp2);
-    deleteElement(supp3);
-    free(newliste);
-    free(tasAcopie);
-    free(tasAcopie2);
-    return tasFinal;
+    return constructionTasArbre(clefs, taille);
 }
 
 void affichageTasArbre(TasArbre* tas) // Parcours prefixe

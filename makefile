@@ -27,7 +27,7 @@ $(OBJ_DIR)/%.o: $(TEST_DIR)/%.c | $(OBJ_DIR)
 $(BIN_DIR)/test_clef128: $(OBJ_DIR)/test_clef128.o $(OBJ_DIR)/clef128.o | $(BIN_DIR)
 	$(CC) $(CFLAGS) $^ -o $@
 
-$(BIN_DIR)/test_tasArbre: $(OBJ_DIR)/test_tasArbre.o $(OBJ_DIR)/tasArbre.o $(OBJ_DIR)/clef128.o | $(BIN_DIR)
+$(BIN_DIR)/test_tasArbre: $(OBJ_DIR)/test_tasArbre.o $(OBJ_DIR)/tasArbre.o $(OBJ_DIR)/clef128.o $(OBJ_DIR)/listeChaine.o| $(BIN_DIR)
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 
 $(BIN_DIR)/test_tasTableau: $(OBJ_DIR)/test_tasTableau.o $(OBJ_DIR)/tasTableau.o $(OBJ_DIR)/clef128.o | $(BIN_DIR)
@@ -39,10 +39,10 @@ $(BIN_DIR)/test_tempsTasTableau: $(OBJ_DIR)/test_tempsTasTableau.o $(OBJ_DIR)/ta
 $(BIN_DIR)/test_tempsTasTableauUnion: $(OBJ_DIR)/test_tempsTasTableauUnion.o $(OBJ_DIR)/tasTableau.o $(OBJ_DIR)/clef128.o | $(BIN_DIR)
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 
-$(BIN_DIR)/test_tempsTasArbre: $(OBJ_DIR)/test_tempsTasArbre.o $(OBJ_DIR)/tasArbre.o $(OBJ_DIR)/clef128.o | $(BIN_DIR)
+$(BIN_DIR)/test_tempsTasArbre: $(OBJ_DIR)/test_tempsTasArbre.o $(OBJ_DIR)/tasArbre.o $(OBJ_DIR)/clef128.o $(OBJ_DIR)/listeChaine.o| $(BIN_DIR)
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 
-$(BIN_DIR)/test_tempsTasArbreUnion: $(OBJ_DIR)/test_tempsTasArbreUnion.o $(OBJ_DIR)/tasArbre.o $(OBJ_DIR)/clef128.o | $(BIN_DIR)
+$(BIN_DIR)/test_tempsTasArbreUnion: $(OBJ_DIR)/test_tempsTasArbreUnion.o $(OBJ_DIR)/tasArbre.o $(OBJ_DIR)/clef128.o $(OBJ_DIR)/listeChaine.o | $(BIN_DIR)
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 
 $(BIN_DIR)/test_fileBinomiale: $(OBJ_DIR)/test_fileBinomiale.o $(OBJ_DIR)/fileBinomiale.o $(OBJ_DIR)/clef128.o | $(BIN_DIR)

@@ -79,7 +79,7 @@ int main()
             {
                 unsigned int* md5 = MD5(buffer);
                 Clef128* clef = (Clef128*)malloc(sizeof(Clef128));
-                clef->clef_hexa = (char*)malloc(sizeof(char)*32);
+                clef->clef_hexa = (char*)malloc(sizeof(char)*33);
                 clef->b32_1 = md5[3];
                 clef->b32_2 = md5[2];
                 clef->b32_3 = md5[1];
@@ -112,8 +112,6 @@ int main()
     {
         if(rechercher(arbre_rech, clefs[i]) == 0)
         {
-            printf("i = %d\n", i );
-            printf("----------------\n");
             collision = insertMap(collision, clefs[i]);
             fprintf(fichier,"Clef = %s -> %u %u %u %u\n", 
                             clefs[i]->clef_hexa, clefs[i]->b32_4, clefs[i]->b32_3, clefs[i]->b32_2, clefs[i]->b32_1);
