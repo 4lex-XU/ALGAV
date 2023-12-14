@@ -108,8 +108,8 @@ void affichageTasTableau(TasTableau* tas)
 }
 
 TasTableau * UnionTasTableau(TasTableau *tas1, TasTableau *tas2) {
-    if(tas1->taille == 0) return tas2;
-    if(tas2->taille == 0) return tas1;
+    if(tas1 == NULL || tas1->taille == 0) return tas2;
+    if(tas2 == NULL || tas2->taille == 0) return tas1;
 
     int tailleTotale = tas1->taille + tas2->taille;
     TasTableau * tasUnion = initTas(tailleTotale);
