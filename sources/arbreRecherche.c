@@ -63,6 +63,16 @@ Noeud* inserer(Noeud* noeud, Clef128* clef) {
     return noeud;
 }
 
+Noeud* ajoutsIteratifsArbreRecherche(Clef128* clefs[], int taille)
+{
+    Noeud* noeud = NULL;
+    for(int i = 0; i<taille; i++)
+    {
+        noeud = inserer(noeud, clefs[i]);
+    }
+    return noeud;
+}
+
 int rechercher(Noeud* racine, Clef128* clef) {
     if (racine == NULL)
         return 0;
@@ -128,4 +138,15 @@ void affichageArbre(Noeud* racine) {
         affichageClef(racine->clef);
         affichageArbre(racine->droite);
     }
+}
+
+void deleteArbreRecherche(Noeud* noeud)
+{
+    if(noeud == NULL)
+    {
+        return;
+    }
+    deleteArbreRecherche(noeud->gauche);
+    deleteArbreRecherche(noeud->droite);
+    free(noeud);
 }

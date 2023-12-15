@@ -13,7 +13,7 @@ CFLAGS = -I$(HEADER_DIR) -Wall -Wextra -Werror -std=c99 -pedantic -g
 all: $(BIN_DIR)/test_clef128 $(BIN_DIR)/test_tasArbre $(BIN_DIR)/test_tasTableau $(BIN_DIR)/test_tempsTasTableau \
 	$(BIN_DIR)/test_tempsTasArbre $(BIN_DIR)/test_tempsTasArbreUnion $(BIN_DIR)/test_tempsTasTableauUnion \
 	$(BIN_DIR)/test_fonctionHachage $(BIN_DIR)/test_fileBinomiale $(BIN_DIR)/test_tempsFileBinomiale \
-	$(BIN_DIR)/test_tempsFileBinomialeUnion $(BIN_DIR)/test_arbreRecherche $(BIN_DIR)/shakespeare \
+	$(BIN_DIR)/test_tempsFileBinomialeUnion $(BIN_DIR)/test_arbreRecherche $(BIN_DIR)/test_tempsArbreRecherche $(BIN_DIR)/shakespeare \
 	$(BIN_DIR)/test_temps_6_16_Construction $(BIN_DIR)/test_temps_6_16_Ajout $(BIN_DIR)/test_temps_6_16_Supp \
 	$(BIN_DIR)/test_temps_6_16_Union
 
@@ -58,6 +58,9 @@ $(BIN_DIR)/test_fonctionHachage: $(OBJ_DIR)/test_fonctionHachage.o $(OBJ_DIR)/fo
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 
 $(BIN_DIR)/test_arbreRecherche: $(OBJ_DIR)/test_arbreRecherche.o $(OBJ_DIR)/clef128.o $(OBJ_DIR)/arbreRecherche.o | $(BIN_DIR)
+	$(CC) $(CFLAGS) $^ -o $@ -lm
+
+$(BIN_DIR)/test_tempsArbreRecherche: $(OBJ_DIR)/test_tempsArbreRecherche.o $(OBJ_DIR)/arbreRecherche.o $(OBJ_DIR)/clef128.o | $(BIN_DIR)
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 
 $(BIN_DIR)/shakespeare: $(OBJ_DIR)/shakespeare.o $(OBJ_DIR)/fonctionHachage.o $(OBJ_DIR)/listeChaine.o $(OBJ_DIR)/arbreRecherche.o $(OBJ_DIR)/clef128.o | $(BIN_DIR)

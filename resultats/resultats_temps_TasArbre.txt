@@ -1,8 +1,8 @@
-Taille: 1000, ajoutsIteratifs: 0.001194, construction: 0.000157
-Taille: 5000, ajoutsIteratifs: 0.004051, construction: 0.000790
-Taille: 10000, ajoutsIteratifs: 0.009153, construction: 0.001737
-Taille: 20000, ajoutsIteratifs: 0.021521, construction: 0.005626
-Taille: 50000, ajoutsIteratifs: 0.057845, construction: 0.022502
-Taille: 80000, ajoutsIteratifs: 0.100839, construction: 0.040602
-Taille: 120000, ajoutsIteratifs: 0.160148, construction: 0.059394
-Taille: 200000, ajoutsIteratifs: 0.277430, construction: 0.101857
+Taille: 1000, ajoutsIteratifs: 0.000702, construction: 0.000160
+Taille: 5000, ajoutsIteratifs: 0.004186, construction: 0.000753
+Taille: 10000, ajoutsIteratifs: 0.008400, construction: 0.001606
+Taille: 20000, ajoutsIteratifs: 0.017677, construction: 0.004102
+Taille: 50000, ajoutsIteratifs: 0.049506, construction: 0.017004
+Taille: 80000, ajoutsIteratifs: 0.095110, construction: 0.036937
+Taille: 120000, ajoutsIteratifs: 0.137173, construction: 0.051009
+Taille: 200000, ajoutsIteratifs: 0.219147, construction: 0.085693

@@ -44,7 +44,7 @@ Clef128 supprMinTasArbre (TasArbre* tas, TasArbre* racine);
 Element* ajoutListe(TasArbre* noeud);
 void deleteElement(Element* tete);
 TasArbre* constructionTasArbre(Clef128* clefs[], int len);
-void UnionParcours(ListeChainee** liste, TasArbre* tas);
+//void UnionParcours(ListeChainee** liste, TasArbre* tas);
 TasArbre* UnionTasArbre(TasArbre* tas1, TasArbre* tas2);
 void affichageTasArbre(TasArbre* tas);
 void deleteTasArbre(TasArbre* tas);

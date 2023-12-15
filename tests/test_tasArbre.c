@@ -58,7 +58,7 @@ int main(int argc, char** argv){
     
     // SUPPRESSION
     Clef128 min = supprMinTasArbre(t1, t1);
-    printf("\n");
+    printf("\n");   
     printf("------CLEF MINIMUM------\n");
     affichageClef(&min);
     printf("\n");
